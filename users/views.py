@@ -60,7 +60,7 @@ def user_login(request):
         
         if user is not None and user.check_password(password) and user.is_active:
             login(request, user)
-            return redirect('/myapp/home/')
+            return redirect('/myapp/')
         else:
             return render(request, 'login.html', {'error': 'Invalid credentials or account not activated.'})
     else:
@@ -84,7 +84,7 @@ def user_login(request):
         
         if user is not None and user.check_password(password) and user.is_active:
             login(request, user)
-            return redirect('/myapp/home/')
+            return redirect('/myapp/')
         else:
             return render(request, 'login.html', {'error': 'Invalid credentials or account not activated.'})
     else:
