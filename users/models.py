@@ -1,6 +1,7 @@
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.db import models
 from django.utils import timezone
+import phonenumbers
 
 class CustomUserManager(BaseUserManager):
     def create_user(self, email, username, phone_number, password=None, **extra_fields):
@@ -35,3 +36,10 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.email
+
+    def formatted_phone_number(self):
+        try:
+            pn = phonenumbers.parse(self.phone_number, 'MM')  # Myanmar region code
+            return phonenumbers.format_number(pn, phonenumbers.PhoneNumberFormat.INTERNATIONAL)
+        except phonenumbers.NumberParseException:
+            return self.phone_number

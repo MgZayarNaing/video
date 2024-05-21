@@ -5,6 +5,8 @@ from django.contrib.auth.admin import UserAdmin
 from .models import CustomUser
 from django.utils import timezone
 from datetime import timedelta
+from .models import CustomUser
+
 
 def export_as_csv(modeladmin, request, queryset):
     meta = modeladmin.model._meta
@@ -25,8 +27,9 @@ export_as_csv.short_description = "Export Selected"
 class CustomUserAdmin(UserAdmin):
     model = CustomUser
     list_display = [
-        'email', 
         'username', 
+        'email', 
+        'formatted_phone_number',
         'is_active', 
         'is_staff', 
         'formatted_date_joined', 
