@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en" data-bs-theme="auto">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Video Project">
+    <meta name="author" content="Zayar Naing">
+
+    <!-- Custom styles for this template -->
+    <!-- <link href="{% static 'css/headers.css'%}" rel="stylesheet"> -->
+
+    <title>{% block title %}{% endblock %}</title>
+
+</head>
+
+<body>
+   
+
+    {% include 'header.html' %}
+
+    {% block body %}{% endblock %}
+
+    {% include 'footer.html' %}
+
+
+
+</body>
+
+</html>
