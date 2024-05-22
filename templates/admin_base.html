@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+{% load static %}
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="{% static 'assets/images/favicon.ico' %}" />
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="{% static 'assets/css/bootstrap.min.css' %}">
+    <!--datatable CSS -->
+    <link rel="stylesheet" href="{% static 'assets/css/dataTables.bootstrap4.min.css' %}">
+    <!-- Typography CSS -->
+    <link rel="stylesheet" href="{% static 'assets/css/typography.css' %}">
+    <!-- Style CSS -->
+    <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
+    <!-- Responsive CSS -->
+    <link rel="stylesheet" href="{% static 'assets/css/responsive.css' %}">
+    <title>{% block title %}{% endblock %}</title>
+
+</head>
+
+<body>
+
+    <!-- loader Start -->
+    <!-- <div id="loading">
+        <div id="loading-center">
+        </div>
+    </div> -->
+    <!-- loader END -->
+
+    <div class="wrapper">
+        {% include 'admin_sidebar.html' %}
+        {% include 'admin_header.html' %}
+
+        {% block body %}{% endblock %}
+
+        <!-- {% include 'admin_footer.html' %} -->
+
+    </div>
+
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="{% static 'assets/js/jquery.min.js' %}"></script>
+    <script src="{% static 'assets/js/popper.min.js' %}"></script>
+    <script src="{% static 'assets/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'assets/js/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'assets/js/dataTables.bootstrap4.min.js' %}"></script>
+    <!-- Appear JavaScript -->
+    <script src="{% static 'assets/js/jquery.appear.js' %}"></script>
+    <!-- Countdown JavaScript -->
+    <script src="{% static 'assets/js/countdown.min.js' %}"></script>
+    <!-- Select2 JavaScript -->
+    <script src="{% static 'assets/js/select2.min.js' %}"></script>
+    <!-- Counterup JavaScript -->
+    <script src="{% static 'assets/js/waypoints.min.js' %}"></script>
+    <script src="{% static 'assets/js/jquery.counterup.min.js' %}"></script>
+    <!-- Wow JavaScript -->
+    <script src="{% static 'assets/js/wow.min.js' %}"></script>
+    <!-- Slick JavaScript -->
+    <script src="{% static 'assets/js/slick.min.js' %}"></script>
+    <!-- Owl Carousel JavaScript -->
+    <script src="{% static 'assets/js/owl.carousel.min.js' %}"></script>
+    <!-- Magnific Popup JavaScript -->
+    <script src="{% static 'assets/js/jquery.magnific-popup.min.js' %}"></script>
+    <!-- Smooth Scrollbar JavaScript -->
+    <script src="{% static 'assets/js/smooth-scrollbar.js' %}"></script>
+    <!-- apex Custom JavaScript -->
+    <script src="{% static 'assets/js/apexcharts.js' %}"></script>
+    <!-- Chart Custom JavaScript -->
+    <script src="{% static 'assets/js/chart-custom.js' %}"></script>
+    <!-- Custom JavaScript -->
+    <script src="{% static 'assets/js/custom.js' %}"></script>
+
+
+</body>
+
+</html>

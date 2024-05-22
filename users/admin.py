@@ -5,7 +5,6 @@ from django.contrib.auth.admin import UserAdmin
 from .models import CustomUser
 from django.utils import timezone
 from datetime import timedelta
-from .models import CustomUser
 
 
 def export_as_csv(modeladmin, request, queryset):
@@ -24,6 +23,7 @@ def export_as_csv(modeladmin, request, queryset):
 
 export_as_csv.short_description = "Export Selected"
 
+
 class CustomUserAdmin(UserAdmin):
     model = CustomUser
     list_display = [
@@ -35,7 +35,8 @@ class CustomUserAdmin(UserAdmin):
         'formatted_date_joined', 
         'formatted_last_login', 
         'formatted_last_logout', 
-        'get_duration'
+        'get_duration',
+        'get_status'
     ]
     readonly_fields = ['date_joined', 'last_login', 'last_activity', 'last_logout']
     actions = [export_as_csv]
