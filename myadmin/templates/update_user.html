@@ -1,0 +1,49 @@
+{% extends 'admin_base.html' %}
+{% block title %} Update User {% endblock %}
+
+{% block body %}
+<div id="content-page" class="content-page">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12 col-lg-6 offset-lg-3">
+                <div class="iq-card">
+                    <div class="iq-card-header d-flex justify-content-between">
+                        <div class="iq-header-title">
+                            <h4 class="card-title">Update User</h4>
+                        </div>
+                    </div>
+                    <div class="iq-card-body">
+                        <form method="POST">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <label for="username">Username</label>
+                                <input type="text" class="form-control" id="username" name="username" value="{{ user.username }}" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Email</label>
+                                <input type="email" class="form-control" id="email" name="email" value="{{ user.email }}" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="phone_number">Phone Number</label>
+                                <input type="text" class="form-control" id="phone_number" name="phone_number" value="{{ user.phone_number }}" required>
+                            </div>
+                            <div class="custom-control custom-switch">
+                                <input type="checkbox" class="custom-control-input" id="is_active" name="is_active" {% if user.is_active %}checked{% endif %}>
+                                <label class="custom-control-label" for="is_active">Is Active</label>
+                            </div>
+                            <div class="custom-control custom-switch">
+                                <input type="checkbox" class="custom-control-input" id="is_staff" name="is_staff" {% if user.is_staff %}checked{% endif %}>
+                                <label class="custom-control-label" for="is_staff">Is Staff</label>
+                            </div>
+                            <div class="d-flex justify-content-between mt-3">
+                                <button type="submit" class="btn btn-primary">Update</button>
+                                <a href="{% url 'user_list' %}" class="btn btn-secondary">Cancel</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

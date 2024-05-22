@@ -19,6 +19,8 @@
                             <table class="data-tables table movie_table" style="width:100%">
                                 <thead>
                                     <tr>
+                                        <th style="width: 5%;">No.</th>
+                                        <th style="width: 5%;">ID</th>
                                         <th style="width: 10%;">Username</th>
                                         <th style="width: 10%;">Email</th>
                                         <th style="width: 10%;">Phone Number</th>
@@ -34,12 +36,28 @@
                                 </thead>
                                 <tbody>
                                     {% for user in users %}
-                                    <tr>
+                                    <tr id="user-row-{{ user.id }}">
+                                        <td>{{ forloop.counter }}</td>
+                                        <td>{{ user.id|stringformat:"s"|slice:":6" }}</td>
                                         <td>{{ user.username }}</td>
                                         <td>{{ user.email }}</td>
-                                        <td>{{ user.phone_number }}</td>
-                                        <td>{{ user.is_active }}</td>
-                                        <td>{{ user.is_staff }}</td>
+                                        <td>{{ user.formatted_phone_number }}</td>
+                                        <td>
+                                            <div class="custom-control custom-switch custom-switch-text custom-switch-color custom-control-inline">
+                                                <div class="custom-switch-inner">
+                                                    <input type="checkbox" class="custom-control-input bg-success" id="customSwitch-{{ user.id }}" {% if user.is_active %}checked{% endif %} onclick="toggleActive('{{ user.id }}')">
+                                                    <label class="custom-control-label" for="customSwitch-{{ user.id }}" data-on-label="Tr" data-off-label="Fal"></label>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="custom-control custom-switch custom-switch-text custom-switch-color custom-control-inline">
+                                                <div class="custom-switch-inner">
+                                                    <input type="checkbox" class="custom-control-input bg-success" id="customSwitch-staff-{{ user.id }}" {% if user.is_staff %}checked{% endif %} onclick="toggleStaff('{{ user.id }}')">
+                                                    <label class="custom-control-label" for="customSwitch-staff-{{ user.id }}" data-on-label="Tr" data-off-label="Fal"></label>
+                                                </div>
+                                            </div>
+                                        </td>
                                         <td>{{ user.formatted_date_joined }}</td>
                                         <td>{{ user.formatted_last_login }}</td>
                                         <td>{{ user.formatted_last_logout }}</td>
@@ -47,10 +65,10 @@
                                         <td>{{ user.get_status }}</td>
                                         <td>
                                             <div class="flex align-items-center list-user-action">
-                                                <a class="iq-bg-success" data-toggle="tooltip" data-placement="top" title="Edit" href="#">
+                                                <a class="iq-bg-success" data-toggle="tooltip" data-placement="top" title="Edit" href="{% url 'update_user' user.id %}">
                                                     <i class="ri-pencil-line"></i>
                                                 </a>
-                                                <a class="iq-bg-primary" data-toggle="tooltip" data-placement="top" title="Delete" href="#">
+                                                <a class="iq-bg-primary" data-toggle="tooltip" data-placement="top" title="Delete" href="javascript:void(0);" onclick="deleteUser('{{ user.id }}')">
                                                     <i class="ri-delete-bin-line"></i>
                                                 </a>
                                             </div>
@@ -66,4 +84,90 @@
         </div>
     </div>
 </div>
+
+<script>
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    function toggleActive(userId) {
+        const checkbox = document.getElementById(`customSwitch-${userId}`);
+        const isActive = checkbox.checked;
+        const csrftoken = getCookie('csrftoken');
+
+        fetch(`/myadmin/toggle-active/${userId}/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrftoken
+            },
+            body: JSON.stringify({ is_active: isActive })
+        }).then(response => response.json()).then(data => {
+            if (data.status !== 'success') {
+                checkbox.checked = !isActive;
+                alert('Failed to update status: ' + data.message);
+            }
+        }).catch(error => {
+            checkbox.checked = !isActive;
+            alert('Failed to update status: ' + error);
+        });
+    }
+
+    function toggleStaff(userId) {
+        const checkbox = document.getElementById(`customSwitch-staff-${userId}`);
+        const isStaff = checkbox.checked;
+        const csrftoken = getCookie('csrftoken');
+
+        fetch(`/myadmin/toggle-staff/${userId}/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrftoken
+            },
+            body: JSON.stringify({ is_staff: isStaff })
+        }).then(response => response.json()).then(data => {
+            if (data.status !== 'success') {
+                checkbox.checked = !isStaff;
+                alert('Failed to update staff status: ' + data.message);
+            }
+        }).catch(error => {
+            checkbox.checked = !isStaff;
+            alert('Failed to update staff status: ' + error);
+        });
+    }
+
+    function deleteUser(userId) {
+        const csrftoken = getCookie('csrftoken');
+
+        if (confirm('Are you sure you want to delete this user?')) {
+            fetch(`/myadmin/delete-user/${userId}/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrftoken
+                },
+                body: JSON.stringify({})
+            }).then(response => response.json()).then(data => {
+                if (data.status === 'success') {
+                    document.getElementById(`user-row-${userId}`).remove();
+                } else {
+                    alert('Failed to delete user: ' + data.message);
+                }
+            }).catch(error => {
+                alert('Failed to delete user: ' + error);
+            });
+        }
+    }
+</script>
 {% endblock %}
