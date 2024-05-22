@@ -43,22 +43,31 @@
                     </div>
                     <div class="col-sm-6 col-lg-6 col-xl-3">
                        <div class="iq-card iq-card-block iq-card-stretch iq-card-height">
-                          <div class="iq-card-body">
-                             <div class="d-flex align-items-center justify-content-between">
+                        <div class="iq-card-body">
+                            <div class="d-flex align-items-center justify-content-between">
                                 <div class="iq-cart-text text-capitalize">
-                                   <p class="mb-0 font-size-14">
-                                      Rated This App
-                                   </p>
+                                    <p class="mb-0 font-size-14">
+                                        Daily Visitor's
+                                    </p>
                                 </div>
-                                <div class="icon iq-icon-box-top rounded-circle bg-warning">
-                                   <i class="lar la-star"></i>
+                                <div class="icon iq-icon-box-top rounded-circle bg-info">
+                                    <i class="las la-user-check"></i>
                                 </div>
-                             </div>
-                             <div class="d-flex align-items-center justify-content-between mt-3">
-                                <h4 class=" mb-0">+55K</h4>
-                                <p class="mb-0 text-warning"><span><i class="fa fa-caret-up mr-2"></i></span>50%</p>
-                             </div>
-                          </div>
+                            </div>
+                            <div class="d-flex align-items-center justify-content-between mt-3">
+                                <h4 class="mb-0">{{ daily_visitors }}</h4>
+                                <p class="mb-0 text-info">
+                                    <span>
+                                        {% if daily_visitor_growth.status == 'up' %}
+                                            <i class="fa fa-caret-up mr-2"></i>
+                                        {% else %}
+                                            <i class="fa fa-caret-down mr-2"></i>
+                                        {% endif %}
+                                    </span>
+                                    {{ daily_visitor_growth.percentage }}%
+                                </p>
+                            </div>
+                        </div>
                        </div>
                     </div>
                     <div class="col-sm-6 col-lg-6 col-xl-3">

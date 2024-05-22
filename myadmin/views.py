@@ -68,8 +68,14 @@ def update_user(request, user_id):
 
 def dashboard_view(request):
     user_count = CustomUser.objects.count()
-    user_growth = calculate_user_growth()  # You need to implement this function
-    return render(request, 'dashboard.html', {'user_count': user_count, 'user_growth': user_growth})
+    user_growth = calculate_user_growth()
+    daily_visitors, daily_visitor_growth = calculate_daily_visitors()  # Implement this function
+    return render(request, 'dashboard.html', {
+        'user_count': user_count,
+        'user_growth': user_growth,
+        'daily_visitors': daily_visitors,
+        'daily_visitor_growth': daily_visitor_growth,
+    })
 
 def calculate_user_growth():
     now = timezone.now()
@@ -90,6 +96,25 @@ def calculate_user_growth():
         'status': status
     }
 
+def calculate_daily_visitors():
+    now = timezone.now()
+    today_start = timezone.make_aware(timezone.datetime.combine(now.date(), timezone.datetime.min.time()))
+    yesterday_start = today_start - timedelta(days=1)
+    
+    daily_visitors = CustomUser.objects.filter(last_login__gte=today_start).count()
+    yesterday_visitors = CustomUser.objects.filter(last_login__gte=yesterday_start, last_login__lt=today_start).count()
+    
+    if yesterday_visitors == 0:
+        growth_percentage = 100
+    else:
+        growth_percentage = ((daily_visitors - yesterday_visitors) / yesterday_visitors) * 100
+
+    status = 'up' if growth_percentage >= 0 else 'down'
+    
+    return daily_visitors, {
+        'percentage': abs(growth_percentage),
+        'status': status
+    }
 def user_list(request):
     CustomUser = get_user_model()
     users = CustomUser.objects.all()
