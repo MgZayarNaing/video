@@ -7,6 +7,8 @@ from users.models import CustomUser
 import json 
 from django.utils import timezone
 from datetime import timedelta
+from .models import VisitorLog
+from django.db.models import Sum 
 
 @csrf_exempt
 def toggle_active(request, user_id):
@@ -65,16 +67,18 @@ def update_user(request, user_id):
 
     return render(request, 'update_user.html', {'user': user})
 
-
 def dashboard_view(request):
     user_count = CustomUser.objects.count()
     user_growth = calculate_user_growth()
-    daily_visitors, daily_visitor_growth = calculate_daily_visitors()  # Implement this function
+    daily_visitors, daily_visitor_growth = calculate_daily_visitors()
+    total_visitors, total_visitor_growth = calculate_total_visitors()
     return render(request, 'dashboard.html', {
         'user_count': user_count,
         'user_growth': user_growth,
         'daily_visitors': daily_visitors,
         'daily_visitor_growth': daily_visitor_growth,
+        'total_visitors': total_visitors,
+        'total_visitor_growth': total_visitor_growth,
     })
 
 def calculate_user_growth():
@@ -111,10 +115,36 @@ def calculate_daily_visitors():
 
     status = 'up' if growth_percentage >= 0 else 'down'
     
+    # Save the daily visitors count
+    visitor_log, created = VisitorLog.objects.get_or_create(date=today_start.date())
+    visitor_log.count = daily_visitors
+    visitor_log.save()
+
     return daily_visitors, {
         'percentage': abs(growth_percentage),
         'status': status
     }
+
+def calculate_total_visitors():
+    now = timezone.now()
+    one_month_ago = now - timedelta(days=30)
+    
+    total_visitors = VisitorLog.objects.aggregate(total=Sum('count'))['total'] or 0
+    current_month_visitors = VisitorLog.objects.filter(date__gte=one_month_ago).aggregate(total=Sum('count'))['total'] or 0
+    previous_month_visitors = VisitorLog.objects.filter(date__lt=one_month_ago, date__gte=one_month_ago - timedelta(days=30)).aggregate(total=Sum('count'))['total'] or 0
+    
+    if previous_month_visitors == 0:
+        growth_percentage = 100
+    else:
+        growth_percentage = ((current_month_visitors - previous_month_visitors) / previous_month_visitors) * 100
+    
+    status = 'up' if growth_percentage >= 0 else 'down'
+
+    return total_visitors, {
+        'percentage': abs(growth_percentage),
+        'status': status
+    }
+
 def user_list(request):
     CustomUser = get_user_model()
     users = CustomUser.objects.all()
