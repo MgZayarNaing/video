@@ -3,9 +3,10 @@ from django.contrib.auth import get_user_model
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import get_object_or_404
-from users.models import CustomUser  # Change this to the correct app name
-import json  # Add this import
-
+from users.models import CustomUser
+import json 
+from django.utils import timezone
+from datetime import timedelta
 
 @csrf_exempt
 def toggle_active(request, user_id):
@@ -64,8 +65,30 @@ def update_user(request, user_id):
 
     return render(request, 'update_user.html', {'user': user})
 
+
 def dashboard_view(request):
-    return render(request, 'dashboard.html')
+    user_count = CustomUser.objects.count()
+    user_growth = calculate_user_growth()  # You need to implement this function
+    return render(request, 'dashboard.html', {'user_count': user_count, 'user_growth': user_growth})
+
+def calculate_user_growth():
+    now = timezone.now()
+    one_month_ago = now - timedelta(days=30)
+    
+    current_month_count = CustomUser.objects.filter(date_joined__gte=one_month_ago).count()
+    previous_month_count = CustomUser.objects.filter(date_joined__lt=one_month_ago, date_joined__gte=one_month_ago - timedelta(days=30)).count()
+    
+    if previous_month_count == 0:
+        growth_percentage = 100
+    else:
+        growth_percentage = ((current_month_count - previous_month_count) / previous_month_count) * 100
+
+    status = 'up' if growth_percentage >= 0 else 'down'
+    
+    return {
+        'percentage': abs(growth_percentage),
+        'status': status
+    }
 
 def user_list(request):
     CustomUser = get_user_model()

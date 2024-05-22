@@ -4047,7 +4047,7 @@ input[type=submit].btn-block {
 	height: 1rem;
 	pointer-events: none;
 	content: "";
-	background-color: #fff;
+	background-color: red;
 	border: #adb5bd solid 1px
 }
 
