@@ -40,9 +40,9 @@
                                         <td>{{ user.phone_number }}</td>
                                         <td>{{ user.is_active }}</td>
                                         <td>{{ user.is_staff }}</td>
-                                        <td>{{ user.date_joined|date:"h:i:s A Y-m-d" }}</td>
-                                        <td>{{ user.last_login|date:"h:i:s A Y-m-d" }}</td>
-                                        <td>{{ user.last_logout|date:"h:i:s A Y-m-d" }}</td>
+                                        <td>{{ user.formatted_date_joined }}</td>
+                                        <td>{{ user.formatted_last_login }}</td>
+                                        <td>{{ user.formatted_last_logout }}</td>
                                         <td>{{ user.get_duration }}</td>
                                         <td>{{ user.get_status }}</td>
                                         <td>
