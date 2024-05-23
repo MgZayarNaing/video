@@ -38,7 +38,8 @@
                                     {% for user in users %}
                                     <tr id="user-row-{{ user.id }}">
                                         <td>{{ forloop.counter }}</td>
-                                        <td>{{ user.id|stringformat:"s"|slice:":6" }}</td>
+                                        <!-- <td>{{ user.id|stringformat:"s"|slice:":6" }}</td> -->
+                                        <td><a href="{% url 'user_detail' user_id=user.id %}">{{ user.id|stringformat:"s"|slice:":6" }}</a></td>
                                         <td>{{ user.username }}</td>
                                         <td>{{ user.email }}</td>
                                         <td>{{ user.formatted_phone_number }}</td>

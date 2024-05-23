@@ -1,0 +1,75 @@
+{% extends 'admin_base.html' %}
+{% block title %}User Details{% endblock %}
+
+{% block body %}
+<div id="content-page" class="content-page">
+    <div class="container-fluid">
+        <div class="row justify-content-center">
+            <div class="col-sm-12 col-lg-8">
+                <div class="iq-card">
+                    <div class="iq-card-header d-flex justify-content-between align-items-center">
+                        <div class="iq-header-title">
+                            <h4 class="card-title">User Details</h4>
+                        </div>
+                        <a href="{% url 'user_list' %}" class="btn btn-secondary">Back to List</a>
+                    </div>
+                    <div class="iq-card-body">
+                        <div class="row justify-content-center mb-4">
+                            <div class="col-md-4 text-center">
+                                {% if user.image %}
+                                    <img src="{{ user.image.url }}" alt="{{ user.username }}" class="img-fluid rounded-circle mb-3" style="width: 150px; height: 150px; object-fit: cover;">
+                                {% else %}
+                                    <i class="fas fa-user-circle fa-10x mb-3"></i>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <form method="POST">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <label for="username">Username</label>
+                                <input type="text" class="form-control" id="username" name="username" value="{{ user.username }}" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Email</label>
+                                <input type="email" class="form-control" id="email" name="email" value="{{ user.email }}" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label for="phone_number">Phone Number</label>
+                                <input type="text" class="form-control" id="phone_number" name="phone_number" value="{{ user.phone_number }}" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label for="age">Age</label>
+                                <input type="number" class="form-control" id="age" name="age" value="{{ user.age }}" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label for="gender">Gender</label>
+                                <input type="text" class="form-control" id="gender" name="gender" value="{% if user.gender == 'M' %}Male{% elif user.gender == 'F' %}Female{% elif user.gender == 'N' %}Non-Binary{% else %}N/A{% endif %}" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label for="address">Address</label>
+                                <textarea class="form-control" id="address" name="address" readonly>{{ user.address }}</textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="created_at">Created Date</label>
+                                <input type="text" class="form-control" id="created_at" name="created_at" value="{{ user.created_at }}" readonly>
+                            </div>
+                            <div class="custom-control custom-switch">
+                                <input type="checkbox" class="custom-control-input" id="is_active" name="is_active" {% if user.is_active %}checked{% endif %} disabled>
+                                <label class="custom-control-label" for="is_active">Is Active</label>
+                            </div>
+                            <div class="custom-control custom-switch">
+                                <input type="checkbox" class="custom-control-input" id="is_staff" name="is_staff" {% if user.is_staff %}checked{% endif %} disabled>
+                                <label class="custom-control-label" for="is_staff">Is Staff</label>
+                            </div>
+                            <div class="d-flex justify-content-between mt-3">
+                                <a href="{% url 'update_user' user_id=user.id %}" class="btn btn-primary">Edit</a>
+                                <a href="{% url 'user_list' %}" class="btn btn-secondary">Back to List</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

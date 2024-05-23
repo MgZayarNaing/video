@@ -1,0 +1,136 @@
+{% extends 'admin_base.html' %}
+{% load static %}
+{% block title %}Create Video{% endblock %}
+
+{% block body %}
+<div id="content-page" class="content-page">
+    <div class="container-fluid">
+        <div class="row justify-content-center">
+            <div class="col-sm-12 col-lg-8">
+                <div class="iq-card">
+                    <div class="iq-card-header d-flex justify-content-between align-items-center">
+                        <div class="iq-header-title">
+                            <h4 class="card-title">Create New Video</h4>
+                        </div>
+                    </div>
+                    <div class="iq-card-body">
+                        <form id="videoUploadForm" method="post" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <label for="name">Video Name</label>
+                                <input type="text" class="form-control" id="name" name="name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="description">Description</label>
+                                <textarea class="form-control" id="description" name="description"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="category">Category</label>
+                                <select class="form-control" id="category" name="category">
+                                    {% for category in categories %}
+                                    <option value="{{ category.id }}">{{ category.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="quality">Video Quality</label>
+                                <select class="form-control" id="quality" name="quality">
+                                    <option value="360">360p</option>
+                                    <option value="480">480p</option>
+                                    <option value="720">720p</option>
+                                    <option value="1080">1080p</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="video_file">Video File</label>
+                                <div id="drop_zone" class="form-control" style="height: 200px; border: 2px dashed #ccc; display: flex; align-items: center; justify-content: center; cursor: pointer;">
+                                    Drag and drop a video file here or click to select a file
+                                </div>
+                                <input type="file" class="form-control" id="video_file" name="video_file" accept="video/*" style="display: none;" required>
+                                <video id="videoPreview" width="100%" controls style="display: none; margin-top: 10px;"></video>
+                                <div id="fileSize" style="margin-top: 10px;"></div>
+                                <progress id="uploadProgress" value="0" max="100" style="width: 100%; display: none; margin-top: 10px;"></progress>
+                                <div id="uploadComplete" style="display: none; margin-top: 10px;">Upload Complete!</div>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Create</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById('drop_zone').addEventListener('click', function() {
+    document.getElementById('video_file').click();
+});
+
+document.getElementById('drop_zone').addEventListener('dragover', function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    this.style.borderColor = 'green';
+});
+
+document.getElementById('drop_zone').addEventListener('dragleave', function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    this.style.borderColor = '#ccc';
+});
+
+document.getElementById('drop_zone').addEventListener('drop', function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    this.style.borderColor = '#ccc';
+    var file = e.dataTransfer.files[0];
+    document.getElementById('video_file').files = e.dataTransfer.files;
+    handleFiles(file);
+});
+
+document.getElementById('video_file').addEventListener('change', function(event) {
+    var file = event.target.files[0];
+    handleFiles(file);
+});
+
+function handleFiles(file) {
+    if (file) {
+        var videoPreview = document.getElementById('videoPreview');
+        var fileSizeDisplay = document.getElementById('fileSize');
+        var url = URL.createObjectURL(file);
+        videoPreview.src = url;
+        videoPreview.style.display = 'block';
+        videoPreview.play();
+        document.getElementById('drop_zone').style.display = 'none';
+        document.getElementById('uploadProgress').style.display = 'block';
+        fileSizeDisplay.textContent = `File size: ${(file.size / 1024 / 1024).toFixed(2)} MB`;
+    }
+}
+
+document.getElementById('videoUploadForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    var formData = new FormData(this);
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', "{% url 'create_video' %}", true);
+    xhr.upload.onprogress = function(e) {
+        if (e.lengthComputable) {
+            var percentComplete = Math.round((e.loaded / e.total) * 100);
+            var uploadProgress = document.getElementById('uploadProgress');
+            uploadProgress.value = percentComplete;
+            if (percentComplete === 100) {
+                uploadProgress.style.display = 'none';
+                document.getElementById('uploadComplete').style.display = 'block';
+            }
+        }
+    };
+    xhr.onload = function() {
+        if (xhr.status === 200) {
+            alert('Video uploaded successfully!');
+            window.location.href = "{% url 'video_list' %}";
+        } else {
+            alert('Error uploading video: ' + xhr.responseText);
+        }
+    };
+    xhr.send(formData);
+});
+</script>
+{% endblock %}

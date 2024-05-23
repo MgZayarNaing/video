@@ -1,0 +1,109 @@
+{% extends 'admin_base.html' %}
+{% block title %} Category Lists {% endblock %}
+
+{% block body %}
+{% load static %}
+<!-- Page Content  -->
+<div id="content-page" class="content-page">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="iq-card">
+                    <div class="iq-card-header d-flex justify-content-between">
+                        <div class="iq-header-title">
+                            <h4 class="card-title">Category Lists</h4>
+                        </div>
+                        <div>
+                            <a href="{% url 'create_category' %}" class="btn btn-sm btn-success">Create New Category</a>
+                        </div>
+                    </div>
+                    <div class="iq-card-body">
+                        <div class="table-view">
+                            <table class="data-tables table movie_table" style="width:100%">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 5%;">No.</th>
+                                        <th style="width: 30%;"> ID</th>
+                                        <th style="width: 50%;">Name</th>
+                                        <th style="width: 15%;">Created At</th>
+                                        <th style="width: 10%;">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for category in categories %}
+                                    <tr id="category-row-{{ category.id }}">
+                                        <td>{{ forloop.counter }}</td>
+                                        <td><a href="{% url 'category_detail' category_id=category.id %}">{{category.id|stringformat:"s"|slice:":6" }}</a></td>
+                                        <td>{{ category.name }}</td>
+                                        <td>{{ category.created_at }}</td>
+                                        <td>
+                                            <div class="flex align-items-center list-user-action">
+                                                <a class="iq-bg-success" data-toggle="tooltip" data-placement="top"
+                                                    title="Edit" href="{% url 'update_category' category.id %}">
+                                                    <i class="ri-pencil-line"></i>
+                                                </a>
+                                                <a class="iq-bg-primary" data-toggle="tooltip" data-placement="top"
+                                                    title="Delete" href="javascript:void(0);"
+                                                    onclick="deleteCategory('{{ category.id }}')">
+                                                    <i class="ri-delete-bin-line"></i>
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    function deleteCategory(categoryId) {
+        const csrftoken = getCookie('csrftoken');
+
+        if (confirm('Are you sure you want to delete this category?')) {
+            fetch(`/myadmin/delete_category/${categoryId}/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrftoken
+                },
+                body: JSON.stringify({})
+            }).then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            }).then(data => {
+                if (data.status === 'success') {
+                    document.getElementById(`category-row-${categoryId}`).remove();
+                } else {
+                    alert('Failed to delete category: ' + data.message);
+                }
+            }).catch(error => {
+                alert('Failed to delete category: ' + error);
+            });
+        }
+    }
+</script>
+
+{% endblock %}

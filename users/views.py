@@ -3,42 +3,36 @@ from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.contrib.auth.hashers import make_password
 from django.db import IntegrityError
 from django.utils import timezone
-import phonenumbers
-from django.core.exceptions import ValidationError
+from django.contrib import messages
 
 User = get_user_model()
 
-def validate_phone_number(number, region='MM'):
-    try:
-        phone_number = phonenumbers.parse(number, region)
-        if not phonenumbers.is_valid_number(phone_number):
-            raise ValidationError("Invalid phone number for the given region")
-    except phonenumbers.NumberParseException:
-        raise ValidationError("Invalid phone number format")
-
 def register(request):
     if request.method == 'POST':
-        username = request.POST.get('username')
-        email = request.POST.get('email')
-        phone_number = request.POST.get('phone_number')
-        region = request.POST.get('phone_region', 'MM')  # Default to 'MM' if not specified
-        password = request.POST.get('password')
-        password2 = request.POST.get('password2')
+        username = request.POST.get('username', '').strip()
+        email = request.POST.get('email', '').strip()
+        phone_number = request.POST.get('phone_number', '').strip()
+        password = request.POST.get('password', '').strip()
+        password2 = request.POST.get('password2', '').strip()
+
+        # Check if any field is empty
+        if not (username and email and phone_number and password and password2):
+            messages.error(request, 'Please fill in all fields.')
+            return redirect('register')
 
         if password != password2:
-            return render(request, 'register.html', {'error': 'Passwords do not match'})
-
-        try:
-            validate_phone_number(phone_number, region)
-        except ValidationError as e:
-            return render(request, 'register.html', {'error': str(e)})
+            messages.error(request, 'Passwords do not match.')
+            return redirect('register')
 
         if User.objects.filter(email=email).exists():
-            return render(request, 'register.html', {'error': 'Email already exists'})
+            messages.error(request, 'Email already exists.')
+            return redirect('register')
         if User.objects.filter(username=username).exists():
-            return render(request, 'register.html', {'error': 'Username already exists'})
+            messages.error(request, 'Username already exists.')
+            return redirect('register')
         if User.objects.filter(phone_number=phone_number).exists():
-            return render(request, 'register.html', {'error': 'Phone number already exists'})
+            messages.error(request, 'Phone number already exists.')
+            return redirect('register')
 
         try:
             user = User.objects.create(
@@ -49,16 +43,22 @@ def register(request):
             )
             user.is_active = False  # Require admin approval
             user.save()
+            messages.success(request, 'Your account has been created and is pending approval.')
             return redirect('login')
         except IntegrityError:
-            return render(request, 'register.html', {'error': 'An error occurred. Please try again.'})
+            messages.error(request, 'An error occurred while creating your account. Please try again.')
+            return redirect('register')
     else:
         return render(request, 'register.html')
 
 def user_login(request):
     if request.method == 'POST':
-        username_or_email = request.POST.get('username')
-        password = request.POST.get('password')
+        username_or_email = request.POST.get('username', '').strip()
+        password = request.POST.get('password', '').strip()
+
+        if not (username_or_email and password):
+            messages.error(request, 'Please enter both username/email and password.')
+            return redirect('login')
 
         user = User.objects.filter(email=username_or_email).first() or User.objects.filter(username=username_or_email).first()
 
@@ -66,8 +66,8 @@ def user_login(request):
             login(request, user)
             return redirect('/myapp/')
         else:
-            return render(request, 'login.html', {'error': 'Invalid credentials or account not activated.'})
-
+            messages.error(request, 'Invalid credentials or account not activated.')
+            return redirect('login')
     else:
         return render(request, 'login.html')
 

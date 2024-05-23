@@ -1,0 +1,46 @@
+{% extends 'admin_base.html' %}
+{% block title %}Update Video{% endblock %}
+
+{% block body %}
+<div id="content-page" class="content-page">
+    <div class="container-fluid">
+        <div class="row justify-content-center">
+            <div class="col-sm-12 col-lg-8">
+                <div class="iq-card">
+                    <div class="iq-card-header d-flex justify-content-between align-items-center">
+                        <div class="iq-header-title">
+                            <h4 class="card-title">Update Video</h4>
+                        </div>
+                        <a href="{% url 'video_list' %}" class="btn btn-secondary">Back to List</a>
+                    </div>
+                    <div class="iq-card-body">
+                        <form method="post" action="{% url 'update_video' video.id %}">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <label for="name">Video Name</label>
+                                <input type="text" class="form-control" id="name" name="name" value="{{ video.name }}" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="description">Description</label>
+                                <textarea class="form-control" id="description" name="description">{{ video.description }}</textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="category">Category</label>
+                                <select class="form-control" id="category" name="category" required>
+                                    {% for category in categories %}
+                                    <option value="{{ category.id }}" {% if category.id == video.category.id %}selected{% endif %}>{{ category.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="d-flex justify-content-between mt-3">
+                                <button type="submit" class="btn btn-primary">Update</button>
+                                <a href="{% url 'video_list' %}" class="btn btn-secondary">Cancel</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

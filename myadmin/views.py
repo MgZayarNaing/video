@@ -9,6 +9,13 @@ from django.utils import timezone
 from datetime import timedelta
 from .models import VisitorLog
 from django.db.models import Sum 
+from django.contrib.auth.models import Group
+from django.contrib import messages
+from myapp.models import *
+import ffmpeg
+
+
+User = get_user_model()
 
 @csrf_exempt
 def toggle_active(request, user_id):
@@ -48,38 +55,69 @@ def delete_user(request, user_id):
     return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=400)
 
 def update_user(request, user_id):
-    user = get_object_or_404(CustomUser, id=user_id)
+    user = get_object_or_404(User, id=user_id)
+    
     if request.method == 'POST':
         username = request.POST.get('username')
         email = request.POST.get('email')
         phone_number = request.POST.get('phone_number')
-        is_active = request.POST.get('is_active') == 'on'
-        is_staff = request.POST.get('is_staff') == 'on'
+        age = request.POST.get('age') or None  # Ensure age is None if not provided
+        gender = request.POST.get('gender')
+        address = request.POST.get('address')
+        is_active = 'is_active' in request.POST
+        is_staff = 'is_staff' in request.POST
 
         user.username = username
         user.email = email
         user.phone_number = phone_number
+        user.age = age
+        user.gender = gender
+        user.address = address
         user.is_active = is_active
         user.is_staff = is_staff
+        
+        if 'image' in request.FILES:
+            user.image = request.FILES['image']
 
         user.save()
-        return redirect('user_list')  # Adjust to the name of your user list view
-
+        messages.success(request, 'User details updated successfully!')
+        return redirect('user_list')
+    
     return render(request, 'update_user.html', {'user': user})
 
 def dashboard_view(request):
-    user_count = CustomUser.objects.count()
+    now = timezone.now()
+    ten_minutes_ago = now - timedelta(minutes=10)
+
+    total_users = CustomUser.objects.count()
+    online_users = CustomUser.objects.filter(last_login__gte=ten_minutes_ago).count()
+    offline_users = total_users - online_users
+
     user_growth = calculate_user_growth()
     daily_visitors, daily_visitor_growth = calculate_daily_visitors()
     total_visitors, total_visitor_growth = calculate_total_visitors()
+    total_groups = Group.objects.count() 
+    user_count = CustomUser.objects.count()
+    is_satff = CustomUser.objects.filter(is_staff=True).count()
+    is_active = CustomUser.objects.filter(is_active=True).count()
+    
+
+
     return render(request, 'dashboard.html', {
-        'user_count': user_count,
+        'total_users': total_users,
+        'online_users': online_users,
+        'offline_users': offline_users,
         'user_growth': user_growth,
         'daily_visitors': daily_visitors,
         'daily_visitor_growth': daily_visitor_growth,
         'total_visitors': total_visitors,
         'total_visitor_growth': total_visitor_growth,
+        'total_groups': total_groups,
+        'user_count': user_count,
+        'total_active_users': is_active,
+        'total_staff_users': is_satff,
     })
+
 
 def calculate_user_growth():
     now = timezone.now()
@@ -147,5 +185,135 @@ def calculate_total_visitors():
 
 def user_list(request):
     CustomUser = get_user_model()
-    users = CustomUser.objects.all()
+    users = CustomUser.objects.all().order_by('-created_at')
     return render(request, 'user_list.html', {'users': users})
+
+def user_detail(request, user_id):
+    user = get_object_or_404(CustomUser, id=user_id)
+    return render(request, 'user_detail.html', {'user': user})
+
+
+def category_list(request):
+    categories = Category.objects.all().order_by('name')
+    return render(request, 'category_list.html', {'categories': categories})
+
+def create_category(request):
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        if name:
+            Category.objects.create(name=name)
+            messages.success(request, 'Category created successfully!')
+            return redirect('category_list')
+        else:
+            messages.error(request, 'Name is required.')
+    return render(request, 'create_category.html')
+
+
+@csrf_exempt
+def delete_category(request, category_id):
+    if request.method == 'POST':
+        try:
+            category = get_object_or_404(Category, id=category_id)
+            category.delete()
+            return JsonResponse({'status': 'success'}, status=200, content_type='application/json')
+        except Exception as e:
+            return JsonResponse({'status': 'error', 'message': str(e)}, status=400, content_type='application/json')
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=400, content_type='application/json')
+
+def category_detail(request, category_id):
+    category = get_object_or_404(Category, id=category_id)
+    return render(request, 'category_detail.html', {'category': category})
+
+def update_category(request, category_id):
+    category = get_object_or_404(Category, id=category_id)
+
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        if name:
+            category.name = name
+            category.save()
+            messages.success(request, 'Category updated successfully!')
+            return redirect('category_list')
+        else:
+            messages.error(request, 'Name is required.')
+
+    return render(request, 'update_category.html', {'category': category})
+
+def video_list(request):
+    videos = Video.objects.all().order_by('-created_at')
+    return render(request, 'video_list.html', {'videos': videos})
+
+def create_video(request):
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        description = request.POST.get('description')
+        category_id = request.POST.get('category')
+        quality = request.POST.get('quality')
+        video_file = request.FILES.get('video_file')
+        category = Category.objects.get(id=category_id)
+        
+        # Save the uploaded video file temporarily
+        temp_file_path = 'temp_video_file.mp4'
+        with open(temp_file_path, 'wb+') as destination:
+            for chunk in video_file.chunks():
+                destination.write(chunk)
+        
+        # Convert video to the chosen quality
+        output_file_path = 'output_video_file.mp4'
+        if quality == '360':
+            ffmpeg.input(temp_file_path).output(output_file_path, vf='scale=-1:360').run()
+        elif quality == '480':
+            ffmpeg.input(temp_file_path).output(output_file_path, vf='scale=-1:480').run()
+        elif quality == '720':
+            ffmpeg.input(temp_file_path).output(output_file_path, vf='scale=-1:720').run()
+        elif quality == '1080':
+            ffmpeg.input(temp_file_path).output(output_file_path, vf='scale=-1:1080').run()
+        
+        # Save the converted video file to the Video model
+        with open(output_file_path, 'rb') as output_video:
+            video = Video.objects.create(
+                name=name,
+                description=description,
+                category=category,
+                video_file=output_video,
+                user=request.user
+            )
+        
+        messages.success(request, 'Video created successfully!')
+        return redirect('video_list')
+    else:
+        categories = Category.objects.all()
+        return render(request, 'create_video.html', {'categories': categories})
+
+def video_detail(request, video_id):
+    video = get_object_or_404(Video, id=video_id)
+    return render(request, 'video_detail.html', {'video': video})
+
+@csrf_exempt
+def update_video(request, video_id):
+    video = get_object_or_404(Video, id=video_id)
+
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        description = request.POST.get('description')
+        category_id = request.POST.get('category')
+        category = get_object_or_404(Category, id=category_id)
+
+        video.name = name
+        video.description = description
+        video.category = category
+
+        video.save()
+        messages.success(request, 'Video updated successfully!')
+        return redirect('video_list')
+
+    return render(request, 'update_video.html', {'video': video})
+
+@csrf_exempt
+def delete_video(request, video_id):
+    if request.method == 'POST':
+        video = get_object_or_404(Video, id=video_id)
+        video.delete()
+        return JsonResponse({'status': 'success'}, status=200)
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=400)
+

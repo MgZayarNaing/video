@@ -1,148 +1,66 @@
-{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <meta name="description" content="" />
-    <meta name="author" content="" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register</title>
-    <!-- loader-->
-    <link href="{% static 'css/pace.min.css' %}" rel="stylesheet" />
-    <script src="{% static 'js/pace.min.js' %}"></script>
-    <!--favicon-->
-    <link rel="icon" href="{% static 'images/favicon.ico' %}" type="image/x-icon">
-    <!-- Bootstrap core CSS-->
-    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet" />
-    <link href="{% static 'css/animate.css' %}" rel="stylesheet" type="text/css" />
-    <link href="{% static 'css/icons.css' %}" rel="stylesheet" type="text/css" />
-    <link href="{% static 'css/app-style.css' %}" rel="stylesheet" />
-
-    <!-- Libphonenumber JS for phone number validation -->
-    <script src="https://unpkg.com/libphonenumber-js/bundle/libphonenumber-js.min.js"></script>
+    <!-- Bootstrap CSS (optional, for better styling) -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<body class="bg-theme bg-theme1">
-    <div id="wrapper">
-        <div class="card card-authentication1 mx-auto my-5">
-            <div class="card-body">
-                <div class="card-content p-2">
-                    <div class="text-center">
-                        <img src="{% static 'images/logo-icon.png' %}" alt="logo icon">
-                    </div>
-                    <div class="card-title text-uppercase text-center py-3">Sign Up</div>
-                    {% if error %}
-                        <p style="color: red; font-weight: bold;">{{ error }}</p>
-                    {% endif %}
-                    <form method="post" id="registrationForm">
-                        {% csrf_token %}
-                        <div class="form-group">
-                            <label for="exampleInputUsername" class="sr-only">Username</label>
-                            <div class="position-relative has-icon-right">
-                                <input type="text" id="exampleInputUsername" class="form-control input-shadow"
-                                    placeholder="Enter Username" name="username" required>
-                                <div class="form-control-position">
-                                    <i class="icon-user"></i>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="exampleInputEmail" class="sr-only">Email</label>
-                            <div class="position-relative has-icon-right">
-                                <input type="email" id="exampleInputEmail" class="form-control input-shadow"
-                                    placeholder="Enter Email" name="email" required>
-                                <div class="form-control-position">
-                                    <i class="icon-envelope"></i>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="phoneRegion" class="sr-only">Phone Region</label>
-                            <div class="position-relative has-icon-right">
-                                <select id="phoneRegion" class="form-control input-shadow" required>
-                                    <option value="MM">Myanmar (MM)</option>
-                                    <option value="US">United States (US)</option>
-                                    <!-- Additional regions can be added here -->
-                                </select>
-                                <div class="form-control-position">
-                                    <i class="icon-globe"></i>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="exampleInputPhone" class="sr-only">Phone Number</label>
-                            <div class="position-relative has-icon-right">
-                                <input type="text" id="exampleInputPhone" class="form-control input-shadow"
-                                    placeholder="Enter Phone Number" name="phone_number" required>
-                                <div class="form-control-position">
-                                    <i class="icon-phone"></i>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="exampleInputPassword" class="sr-only">Password</label>
-                            <div class="position-relative has-icon-right">
-                                <input type="password" id="exampleInputPassword" class="form-control input-shadow"
-                                    placeholder="Enter Password" name="password" required>
-                                <div class="form-control-position">
-                                    <i class="icon-lock"></i>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="exampleInputConfirmPassword" class="sr-only">Confirm Password</label>
-                            <div class="position-relative has-icon-right">
-                                <input type="password" id="exampleInputConfirmPassword" class="form-control input-shadow"
-                                    placeholder="Enter Confirm Password" name="password2" required>
-                                <div class="form-control-position">
-                                    <i class="icon-lock"></i>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group col-12">
-                                <div class="icheck-material-white">
-                                    <input type="checkbox" id="user-checkbox" checked="" />
-                                    <label for="user-checkbox">I AGREE WITH TERMS & CONDITIONS</label>
-                                </div>
-                            </div>
-                        </div>
-                        <button type="submit" class="btn btn-light btn-block">Sign Up</button>
-                    </form>
-                </div>
+<body>
+    <div class="container mt-5">
+        <h2>Register</h2>
+        {% if error %}
+            <div class="alert alert-danger" role="alert">
+                {{ error }}
             </div>
-            <div class="card-footer text-center py-3">
-                <p class="text-warning mb-0">Already have an account? <a href="/users/login/"> Sign In here</a></p>
+        {% endif %}
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="username">Username:</label>
+                <input type="text" class="form-control" id="username" name="username" required>
             </div>
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" class="form-control" id="email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="phone_number">Phone Number:</label>
+                <input type="text" class="form-control" id="phone_number" name="phone_number">
+            </div>
+            <div class="form-group">
+                <label for="age">Age:</label>
+                <input type="number" class="form-control" id="age" name="age">
+            </div>
+            <div class="form-group">
+                <label for="gender">Gender:</label>
+                <select class="form-control" id="gender" name="gender">
+                    <option value="">Select Gender</option>
+                    <option value="M">Male</option>
+                    <option value="F">Female</option>
+                    <option value="N">Non-Binary</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="address">Address:</label>
+                <textarea class="form-control" id="address" name="address"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" class="form-control" id="password" name="password" required>
+            </div>
+            <div class="form-group">
+                <label for="password2">Confirm Password:</label>
+                <input type="password" class="form-control" id="password2" name="password2" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Register</button>
+        </form>
+        <div class="mt-3">
+            Already have an account? <a href="{% url 'login' %}">Login here</a>.
         </div>
     </div>
-
-    <!-- Bootstrap core JavaScript-->
-    <script src="{% static 'js/jquery.min.js' %}"></script>
-    <script src="{% static 'js/popper.min.js' %}"></script>
-    <script src="{% static 'js/bootstrap.min.js' %}"></script>
-
-    <!-- Custom scripts -->
-    <script src="{% static 'js/app-script.js' %}"></script>
-
-    <!-- Phone validation script -->
-    <script type="text/javascript">
-        function validatePhoneNumber(inputStr) {
-            var phoneUtil = libphonenumber.parsePhoneNumberFromString(inputStr, document.getElementById('phoneRegion').value);
-            if (!phoneUtil.isValid()) {
-                alert('Please enter a valid phone number for the selected region.');
-                return false;
-            }
-            return true;
-        }
-
-        document.getElementById('registrationForm').onsubmit = function(e) {
-            var phoneInput = document.getElementById('exampleInputPhone').value;
-            if (!validatePhoneNumber(phoneInput)) {
-                e.preventDefault();
-            }
-        };
-    </script>
-
-</body>
-</html>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper

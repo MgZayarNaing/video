@@ -12,6 +12,7 @@
         <div class="row">
             <div class="col-lg-8">
                 <div class="row">
+                    <!-- Users Card -->
                     <div class="col-sm-6 col-lg-6 col-xl-3">
                         <div class="iq-card iq-card-block iq-card-stretch iq-card-height">
                             <div class="iq-card-body">
@@ -26,28 +27,53 @@
                                     </div>
                                 </div>
                                 <div class="d-flex align-items-center justify-content-between mt-3">
-                                    <h4 class="mb-0">{{ user_count }}</h4>
+                                    <h4 class="mb-0">{{ user_count|default:"0" }}</h4>
                                     <p class="mb-0 text-primary">
                                         <span>
                                             {% if user_growth.status == 'up' %}
-                                            <i class="fa fa-caret-up mr-2"></i>
+                                                <i class="fa fa-caret-up mr-2"></i>
+                                            {% elif user_growth.status == 'down' %}
+                                                <i class="fa fa-caret-down mr-2"></i>
                                             {% else %}
-                                            <i class="fa fa-caret-down mr-2"></i>
+                                                <i class="fa fa-circle mr-2"></i>
                                             {% endif %}
                                         </span>
-                                        {{ user_growth.percentage }}%
+                                        {{ user_growth.percentage|default:"0" }}%
                                     </p>
                                 </div>
                             </div>
                         </div>
                     </div>
+
+                    <!-- Total Groups Card -->
+                    <div class="col-sm-6 col-lg-6 col-xl-3">
+                        <div class="iq-card iq-card-block iq-card-stretch iq-card-height">
+                            <div class="iq-card-body">
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <div class="iq-cart-text text-uppercase">
+                                        <p class="mb-0 font-size-14">
+                                            Total Groups
+                                        </p>
+                                    </div>
+                                    <div class="icon iq-icon-box-top rounded-circle bg-info">
+                                        <i class="las la-layer-group"></i>
+                                    </div>
+                                </div>
+                                <div class="d-flex align-items-center justify-content-between mt-3">
+                                    <h4 class="mb-0">{{ total_groups|default:"0" }}</h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Daily Visitors Card -->
                     <div class="col-sm-6 col-lg-6 col-xl-3">
                         <div class="iq-card iq-card-block iq-card-stretch iq-card-height">
                             <div class="iq-card-body">
                                 <div class="d-flex align-items-center justify-content-between">
                                     <div class="iq-cart-text text-capitalize">
                                         <p class="mb-0 font-size-14">
-                                            Daily Visitor's
+                                            Daily Visitors
                                         </p>
                                     </div>
                                     <div class="icon iq-icon-box-top rounded-circle bg-info">
@@ -55,21 +81,25 @@
                                     </div>
                                 </div>
                                 <div class="d-flex align-items-center justify-content-between mt-3">
-                                    <h4 class="mb-0">{{ daily_visitors }}</h4>
+                                    <h4 class="mb-0">{{ daily_visitors|default:"0" }}</h4>
                                     <p class="mb-0 text-info">
                                         <span>
                                             {% if daily_visitor_growth.status == 'up' %}
-                                            <i class="fa fa-caret-up mr-2"></i>
+                                                <i class="fa fa-caret-up mr-2"></i>
+                                            {% elif daily_visitor_growth.status == 'down' %}
+                                                <i class="fa fa-caret-down mr-2"></i>
                                             {% else %}
-                                            <i class="fa fa-caret-down mr-2"></i>
+                                                <i class="fa fa-circle mr-2"></i>
                                             {% endif %}
                                         </span>
-                                        {{ daily_visitor_growth.percentage }}%
+                                        {{ daily_visitor_growth.percentage|default:"0" }}%
                                     </p>
                                 </div>
                             </div>
                         </div>
                     </div>
+
+                    <!-- Total Visitors Card -->
                     <div class="col-sm-6 col-lg-6 col-xl-3">
                         <div class="iq-card iq-card-block iq-card-stretch iq-card-height">
                             <div class="iq-card-body">
@@ -84,174 +114,115 @@
                                     </div>
                                 </div>
                                 <div class="d-flex align-items-center justify-content-between mt-3">
-                                    <h4 class="mb-0">{{ total_visitors }}</h4>
+                                    <h4 class="mb-0">{{ total_visitors|default:"0" }}</h4>
                                     <p class="mb-0 text-warning">
                                         <span>
                                             {% if total_visitor_growth.status == 'up' %}
-                                            <i class="fa fa-caret-up mr-2"></i>
+                                                <i class="fa fa-caret-up mr-2"></i>
+                                            {% elif total_visitor_growth.status == 'down' %}
+                                                <i class="fa fa-caret-down mr-2"></i>
                                             {% else %}
-                                            <i class="fa fa-caret-down mr-2"></i>
+                                                <i class="fa fa-circle mr-2"></i>
                                             {% endif %}
                                         </span>
-                                        {{ total_visitor_growth.percentage }}%
+                                        {{ total_visitor_growth.percentage|default:"0" }}%
                                     </p>
                                 </div>
                             </div>
                         </div>
                     </div>
+                    
+                    <!-- Online Users Card -->
                     <div class="col-sm-6 col-lg-6 col-xl-3">
                         <div class="iq-card iq-card-block iq-card-stretch iq-card-height">
                             <div class="iq-card-body">
                                 <div class="d-flex align-items-center justify-content-between">
                                     <div class="iq-cart-text text-uppercase">
                                         <p class="mb-0 font-size-14">
-                                            Visitors
+                                            Online
                                         </p>
                                     </div>
                                     <div class="icon iq-icon-box-top rounded-circle bg-success">
-                                        <i class="lar la-user"></i>
+                                        <i class="las la-check-circle"></i>
                                     </div>
                                 </div>
                                 <div class="d-flex align-items-center justify-content-between mt-3">
-                                    <h4 class=" mb-0">+2M</h4>
-                                    <p class="mb-0 text-success"><span><i class="fa fa-caret-up mr-2"></i></span>80%</p>
+                                    <h4 class="mb-0">{{ online_users|default:"0" }}</h4>
+                                    
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="iq-card">
-                    <div class="iq-card-header d-flex justify-content-between align-items-center">
-                        <div class="iq-header-title">
-                            <h4 class="card-title">Top Rated Item </h4>
+
+                    <!-- Offline Users Card -->
+                    <div class="col-sm-6 col-lg-6 col-xl-3">
+                        <div class="iq-card iq-card-block iq-card-stretch iq-card-height">
+                            <div class="iq-card-body">
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <div class="iq-cart-text text-uppercase">
+                                        <p class="mb-0 font-size-14">
+                                            Offline
+                                        </p>
+                                    </div>
+                                    <div class="icon iq-icon-box-top rounded-circle bg-danger">
+                                        <i class="las la-times-circle"></i>
+                                    </div>
+                                </div>
+                                <div class="d-flex align-items-center justify-content-between mt-3">
+                                    <h4 class="mb-0">{{ offline_users|default:"0" }}</h4>
+                                    
+                                </div>
+                            </div>
                         </div>
-                        <div id="top-rated-item-slick-arrow" class="slick-aerrow-block "></div>
                     </div>
-                    <div class="iq-card-body">
-                        <ul class="list-unstyled row top-rated-item mb-0">
-                            <li class="col-sm-6 col-lg-4 col-xl-3 iq-rated-box">
-                                <div class="iq-card mb-0">
-                                    <div class="iq-card-body p-0">
-                                        <div class="iq-thumb">
-                                            <a href="javascript:void(0)">
-                                                <img src="../assets/images/dashboard/01.jpg"
-                                                    class="img-fluid w-100 img-border-radius" alt="">
-                                            </a>
-                                        </div>
-                                        <div class="iq-feature-list">
-                                            <h6 class="font-weight-600 mb-0">The Last Breath</h6>
-                                            <p class="mb-0 mt-2">T.v show</p>
-                                            <div class="d-flex align-items-center my-2 iq-ltr-direction">
-                                                <p class="mb-0 mr-2"><i class="lar la-eye mr-1"></i> 134</p>
-                                                <p class="mb-0 "><i class="las la-download ml-2"></i> 30 k</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </li>
-                            <li class="col-sm-6 col-lg-4 col-xl-3 iq-rated-box">
-                                <div class="iq-card mb-0">
-                                    <div class="iq-card-body p-0">
-                                        <div class="iq-thumb">
-                                            <a href="javascript:void(0)">
-                                                <img src="../assets/images/dashboard/02.jpg"
-                                                    class="img-fluid w-100 img-border-radius" alt="">
-                                            </a>
-                                        </div>
-                                        <div class="iq-feature-list">
-                                            <h6 class="font-weight-600 mb-0">Last Night</h6>
-                                            <p class="mb-0 mt-2">Movie</p>
-                                            <div class="d-flex align-items-center my-2 iq-ltr-direction">
-                                                <p class="mb-0 mr-2"><i class="lar la-eye mr-1"></i> 133</p>
-                                                <p class="mb-0 "><i class="las la-download ml-2"></i> 20 k</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </li>
-                            <li class="col-sm-6 col-lg-4 col-xl-3 iq-rated-box">
-                                <div class="iq-card mb-0">
-                                    <div class="iq-card-body p-0">
-                                        <div class="iq-thumb">
-                                            <a href="javascript:void(0)">
-                                                <img src="../assets/images/dashboard/03.jpg"
-                                                    class="img-fluid w-100 img-border-radius" alt="">
-                                            </a>
-                                        </div>
-                                        <div class="iq-feature-list">
-                                            <h6 class="font-weight-600 mb-0">Jeon Woochie</h6>
-                                            <p class="mb-0 mt-2">Movie</p>
-                                            <div class="d-flex align-items-center my-2 iq-ltr-direction">
-                                                <p class="mb-0 mr-2"><i class="lar la-eye mr-1"></i> 222</p>
-                                                <p class="mb-0 "><i class="las la-download ml-2"></i> 40 k</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </li>
-                            <li class="col-sm-6 col-lg-4 col-xl-3 iq-rated-box">
-                                <div class="iq-card mb-0">
-                                    <div class="iq-card-body p-0">
-                                        <div class="iq-thumb">
-                                            <a href="javascript:void(0)">
-                                                <img src="../assets/images/dashboard/04.jpg"
-                                                    class="img-fluid w-100 img-border-radius" alt="">
-                                            </a>
-                                        </div>
-                                        <div class="iq-feature-list">
-                                            <h6 class="font-weight-600 mb-0">Dino Land</h6>
-                                            <p class="mb-0 mt-2">T.v show</p>
-                                            <div class="d-flex align-items-center my-2 iq-ltr-direction">
-                                                <p class="mb-0 mr-2"><i class="lar la-eye mr-1"></i> 122</p>
-                                                <p class="mb-0 "><i class="las la-download ml-2"></i> 25 k</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </li>
-                            <li class="col-sm-6 col-lg-4 col-xl-3 iq-rated-box">
-                                <div class="iq-card mb-0">
-                                    <div class="iq-card-body p-0">
-                                        <div class="iq-thumb">
-                                            <a href="javascript:void(0)">
-                                                <img src="../assets/images/dashboard/05.jpg"
-                                                    class="img-fluid w-100 img-border-radius" alt="">
-                                            </a>
-                                        </div>
-                                        <div class="iq-feature-list">
-                                            <h6 class="font-weight-600 mb-0">Last Race</h6>
-                                            <p class="mb-0 mt-2">T.v show</p>
-                                            <div class="d-flex align-items-center my-2 iq-ltr-direction">
-                                                <p class="mb-0 mr-2"><i class="lar la-eye mr-1"></i> 144</p>
-                                                <p class="mb-0 "><i class="las la-download ml-2"></i> 35 k</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </li>
-                            <li class="col-sm-6 col-lg-4 col-xl-3 iq-rated-box">
-                                <div class="iq-card mb-0">
-                                    <div class="iq-card-body p-0">
-                                        <div class="iq-thumb">
-                                            <a href="javascript:void(0)">
-                                                <img src="../assets/images/dashboard/06.jpg"
-                                                    class="img-fluid w-100 img-border-radius" alt="">
-                                            </a>
-                                        </div>
-                                        <div class="iq-feature-list">
-                                            <h6 class="font-weight-600 mb-0">Opend Dead Shot</h6>
-                                            <p class="mb-0 mt-2">T.v show</p>
-                                            <div class="d-flex align-items-center my-2 iq-ltr-direction">
-                                                <p class="mb-0 mr-2"><i class="lar la-eye mr-1"></i> 134</p>
-                                                <p class="mb-0 "><i class="las la-download ml-2"></i> 30 k</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
+
+                    <!-- Active Users Card -->
+<div class="col-sm-6 col-lg-6 col-xl-3">
+    <div class="iq-card iq-card-block iq-card-stretch iq-card-height">
+        <div class="iq-card-body">
+            <div class="d-flex align-items-center justify-content-between">
+                <div class="iq-cart-text text-uppercase">
+                    <p class="mb-0 font-size-14">
+                        Active Users
+                    </p>
                 </div>
+                <div class="icon iq-icon-box-top rounded-circle bg-success">
+                    <i class="las la-user-check"></i>
+                </div>
+            </div>
+            <div class="d-flex align-items-center justify-content-between mt-3">
+                <h4 class="mb-0">{{ total_active_users }}</h4>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Staff Users Card -->
+<div class="col-sm-6 col-lg-6 col-xl-3">
+    <div class="iq-card iq-card-block iq-card-stretch iq-card-height">
+        <div class="iq-card-body">
+            <div class="d-flex align-items-center justify-content-between">
+                <div class="iq-cart-text text-uppercase">
+                    <p class="mb-0 font-size-14">
+                        Staff Users
+                    </p>
+                </div>
+                <div class="icon iq-icon-box-top rounded-circle bg-info">
+                    <i class="las la-user-tie"></i>
+                </div>
+            </div>
+            <div class="d-flex align-items-center justify-content-between mt-3">
+                <h4 class="mb-0">{{ total_staff_users }}</h4>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+                    
+
+                </div>
+                <!-- Additional sections can be added here -->
             </div>
             <div class="col-lg-4">
                 <div class="iq-card iq-card-block iq-card-stretch iq-card-height">
@@ -270,13 +241,21 @@
                             var userChart = new Chart(ctx, {
                                 type: 'doughnut',
                                 data: {
-                                    labels: ['Users', 'Daily Visitors', 'Total Visitors'],
+                                    labels: ['Users','Groups', 'Daily Visitors', 'Total Visitors', 'Online', 'Offline', 'Active Users','Staff Users'],
                                     datasets: [{
-                                        data: [{{ user_count }}, {{ daily_visitors }}, {{ total_visitors }}],
+                                        data: [{{ user_count }},{{ total_groups|default:"0" }}, {{ daily_visitors }}, {{ total_visitors }},{{ online_users }},{{ offline_users }},{{ total_active_users }},{{ total_staff_users }}],
                             backgroundColor: [
                                 'rgba(226, 14, 2, 1.0)',
                                 'rgba(0, 122, 255, 1.0)',
-                                'rgba(246, 138, 4, 1.0)'
+                                'rgba(246, 138, 4, 1.0)',
+                                'rgba(20, 231, 136, 1)',
+                                'rgba(84, 94, 117, 1)',
+                                'rgba(34, 94, 117, 1)',
+                                'rgba(34, 44, 117, 1)',
+                                'rgba(34, 44, 817, 1)',
+
+
+
                             ],
                                 borderColor: ['rgba(255, 255, 255, 1)'],
                                     borderWidth: 2

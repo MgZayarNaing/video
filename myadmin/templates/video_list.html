@@ -1,0 +1,106 @@
+{% extends 'admin_base.html' %}
+{% block title %}Videos List{% endblock %}
+
+{% block body %}
+{% load static %}
+<!-- Page Content  -->
+<div id="content-page" class="content-page">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="iq-card">
+                    <div class="iq-card-header d-flex justify-content-between">
+                        <div class="iq-header-title">
+                            <h4 class="card-title">Videos List</h4>
+                        </div>
+                        <div>
+                            <a href="{% url 'create_video' %}" class="btn btn-sm btn-success">Create New Video</a>
+                        </div>
+                    </div>
+                    <div class="iq-card-body">
+                        <div class="table-view">
+                            <table class="data-tables table movie_table" style="width:100%">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 5%;">No.</th>
+                                        <th style="width: 15%;">ID</th>
+                                        <th style="width: 15%;">Name</th>
+                                        <th style="width: 15%;">Category</th>
+                                        <th style="width: 15%;">Uploaded By</th>
+                                        <th style="width: 15%;">Created At</th>
+                                        <th style="width: 15%;">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for video in videos %}
+                                    <tr id="video-row-{{ video.id }}">
+                                        <td>{{ forloop.counter }}</td>
+                                        <td><a href="{% url 'video_detail' video.id %}">{{ video.id|stringformat:"s"|slice:":6" }}</a></td>
+                                        <td>{{ video.name }}</td>
+                                        <td>{{ video.category.name }}</td>
+                                        <td>{{ video.user.username }}</td>
+                                        <td>{{ video.created_at }}</td>
+                                        <td>
+                                            <div class="flex align-items-center list-user-action">
+                                                <a class="iq-bg-success" data-toggle="tooltip" data-placement="top" title="Edit" href="{% url 'update_video' video.id %}">
+                                                    <i class="ri-pencil-line"></i>
+                                                </a>
+                                                <a class="iq-bg-primary" data-toggle="tooltip" data-placement="top" title="Delete" href="javascript:void(0);" onclick="deleteVideo('{{ video.id }}')">
+                                                    <i class="ri-delete-bin-line"></i>
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                        <td colspan="7">No videos found.</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function deleteVideo(videoId) {
+    if (confirm("Are you sure you want to delete this video?")) {
+        fetch(`/myadmin/videos/${videoId}/delete/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': getCookie('csrftoken')
+            }
+        }).then(response => response.json())
+          .then(data => {
+            if (data.status === 'success') {
+                alert('Video successfully deleted');
+                window.location.reload();
+            } else {
+                alert('Failed to delete video: ' + data.message);
+            }
+        }).catch(error => {
+            alert('Error: ' + error);
+        });
+    }
+}
+
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+</script>
+{% endblock %}

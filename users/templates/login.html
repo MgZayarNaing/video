@@ -1,158 +1,39 @@
-{% load static %}
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <meta name="description" content="" />
-    <meta name="author" content="" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
-    <!-- loader-->
-    <link href="{% static '/css/pace.min.css' %}" rel="stylesheet" />
-    <script src="{% static '/js/pace.min.js' %}"></script>
-    <!--favicon-->
-    <link rel="icon" href="{% static '/images/favicon.ico' %}" type="image/x-icon">
-    <!-- Bootstrap core CSS-->
-    <link href="{% static '/css/bootstrap.min.css' %}" rel="stylesheet" />
-    <!-- animate CSS-->
-    <link href="{% static '/css/animate.css' %}" rel="stylesheet" type="text/css" />
-    <!-- Icons CSS-->
-    <link href="{% static '/css/icons.css' %}" rel="stylesheet" type="text/css" />
-    <!-- Custom Style-->
-    <link href="{% static '/css/app-style.css' %}" rel="stylesheet" />
+    <!-- Bootstrap CSS for better styling -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 </head>
-
-
-<body class="bg-theme bg-theme1">
-
-    <!-- start loader -->
-    <!-- <div id="pageloader-overlay" class="visible incoming"><div class="loader-wrapper-outer"><div class="loader-wrapper-inner" ><div class="loader"></div></div></div></div> -->
-    <!-- end loader -->
-
-    <!-- Start wrapper-->
-    <div id="wrapper">
-
-        <div class="loader-wrapper">
-            <div class="lds-ring">
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
+<body>
+    <div class="container mt-5">
+        <h2>Login</h2>
+        {% if error %}
+            <div class="alert alert-danger" role="alert">
+                {{ error }}
             </div>
+        {% endif %}
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="username">Username or Email:</label>
+                <input type="text" class="form-control" id="username" name="username" placeholder="Enter username or email" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" class="form-control" id="password" name="password" placeholder="Enter password" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Login</button>
+        </form>
+        <div class="mt-3">
+            Don't have an account? <a href="{% url 'register' %}">Register here</a>.
         </div>
-        <div class="card card-authentication1 mx-auto my-5">
-            <div class="card-body">
-                <div class="card-content p-2">
-                    <div class="text-center">
-                        <img src="{% static '/images/logo-icon.png' %}" alt="logo icon">
-                    </div>
-                    <div class="card-title text-uppercase text-center py-3">Sign In</div>
-                    {% if error %}
-                    <p style="color: red; font-weight: bold;">{{ error }}</p>
-                    {% endif %}
-                    <form method="post">
-                        {% csrf_token %}
-                        <div class="form-group">
-                            <label for="exampleInputUsername" class="sr-only">Username or Email</label>
-                            <!-- <input type="text" name="username" id="username" required> -->
-
-                            <div class="position-relative has-icon-right">
-                                <input type="text" id="exampleInputUsername" class="form-control input-shadow"
-                                    placeholder="Enter Username" name="username" required>
-                                <div class="form-control-position">
-                                    <i class="icon-user"></i>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="exampleInputPassword" class="sr-only">Password</label>
-                            <!-- <input type="password" name="password" id="password" required> -->
-
-                            <div class="position-relative has-icon-right">
-                                <input type="password" id="exampleInputPassword" class="form-control input-shadow"
-                                    name="password" placeholder="Enter Password" required>
-                                <div class="form-control-position">
-                                    <i class="icon-lock"></i>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group col-6">
-                                <div class="icheck-material-white">
-                                    <input type="checkbox" id="user-checkbox" checked="" />
-                                    <label for="user-checkbox">Remember me</label>
-                                </div>
-                            </div>
-                            <div class="form-group col-6 text-right">
-                                <a href="reset-password.html">Reset Password</a>
-                            </div>
-                            <button type="submit" class="btn btn-light btn-block">Sign In</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-            <div class="card-footer text-center py-3">
-                <p class="text-warning mb-0">Do not have an account? <a href="/users/register/"> Sign Up here</a></p>
-            </div>
-        </div>
-
-        <!--Start Back To Top Button-->
-        <a href="javaScript:void();" class="back-to-top"><i class="fa fa-angle-double-up"></i> </a>
-        <!--End Back To Top Button-->
-
-        <!--start color switcher-->
-        <div class="right-sidebar">
-            <div class="switcher-icon">
-                <i class="zmdi zmdi-settings zmdi-hc-spin"></i>
-            </div>
-            <div class="right-sidebar-content">
-
-                <p class="mb-0">Gaussion Texture</p>
-                <hr>
-
-                <ul class="switcher">
-                    <li id="theme1"></li>
-                    <li id="theme2"></li>
-                    <li id="theme3"></li>
-                    <li id="theme4"></li>
-                    <li id="theme5"></li>
-                    <li id="theme6"></li>
-                </ul>
-
-                <p class="mb-0">Gradient Background</p>
-                <hr>
-
-                <ul class="switcher">
-                    <li id="theme7"></li>
-                    <li id="theme8"></li>
-                    <li id="theme9"></li>
-                    <li id="theme10"></li>
-                    <li id="theme11"></li>
-                    <li id="theme12"></li>
-                    <li id="theme13"></li>
-                    <li id="theme14"></li>
-                    <li id="theme15"></li>
-                </ul>
-
-            </div>
-        </div>
-        <!--end color switcher-->
-
-    </div><!--wrapper-->
-
-    <!-- Bootstrap core JavaScript-->
-    <script src="{% static '/js/jquery.min.js' %}"></script>
-    <script src="{% static '/js/popper.min.js' %}"></script>
-    <script src="{% static '/js/bootstrap.min.js' %}"></script>
-
-    <!-- sidebar-menu js -->
-    <script src="{% static '/js/sidebar-menu.js' %}"></script>
-
-    <!-- Custom scripts -->
-    <script src="{% static '/js/app-script.js' %}"></script>
-
+    </div>
+    <!-- Optional JavaScript for Bootstrap components -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
-
 </html>

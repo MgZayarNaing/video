@@ -4,17 +4,31 @@
 {% block body %}
 <div id="content-page" class="content-page">
     <div class="container-fluid">
-        <div class="row">
-            <div class="col-sm-12 col-lg-6 offset-lg-3">
+        <div class="row justify-content-center">
+            <div class="col-sm-12 col-lg-8">
                 <div class="iq-card">
-                    <div class="iq-card-header d-flex justify-content-between">
+                    <div class="iq-card-header d-flex justify-content-between align-items-center">
                         <div class="iq-header-title">
                             <h4 class="card-title">Update User</h4>
                         </div>
+                        <a href="{% url 'user_list' %}" class="btn btn-secondary">Back to List</a>
                     </div>
                     <div class="iq-card-body">
-                        <form method="POST">
+                        <form method="POST" enctype="multipart/form-data">
                             {% csrf_token %}
+                            <div class="row justify-content-center mb-4">
+                                <div class="col-md-4 text-center">
+                                    {% if user.image %}
+                                        <img id="profileImage" src="{{ user.image.url }}" alt="{{ user.username }}" class="img-fluid rounded-circle mb-3" style="width: 150px; height: 150px; object-fit: cover; cursor: pointer;">
+                                    {% else %}
+                                        <i id="profileImage" class="fas fa-user-circle fa-10x mb-3" style="cursor: pointer;"></i>
+                                    {% endif %}
+                                    <div class="form-group">
+                                        <label for="image" style="display: none;">Profile Image:</label>
+                                        <input type="file" class="form-control-file" id="image" name="image" style="display: none;" onchange="previewImage(event)">
+                                    </div>
+                                </div>
+                            </div>
                             <div class="form-group">
                                 <label for="username">Username</label>
                                 <input type="text" class="form-control" id="username" name="username" value="{{ user.username }}" required>
@@ -26,6 +40,22 @@
                             <div class="form-group">
                                 <label for="phone_number">Phone Number</label>
                                 <input type="text" class="form-control" id="phone_number" name="phone_number" value="{{ user.phone_number }}" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="age">Age</label>
+                                <input type="number" class="form-control" id="age" name="age" value="{{ user.age }}">
+                            </div>
+                            <div class="form-group">
+                                <label for="gender">Gender</label>
+                                <select class="form-control" id="gender" name="gender">
+                                    <option value="M" {% if user.gender == 'M' %}selected{% endif %}>Male</option>
+                                    <option value="F" {% if user.gender == 'F' %}selected{% endif %}>Female</option>
+                                    <option value="N" {% if user.gender == 'N' %}selected{% endif %}>Non-Binary</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="address">Address</label>
+                                <textarea class="form-control" id="address" name="address">{{ user.address }}</textarea>
                             </div>
                             <div class="custom-control custom-switch">
                                 <input type="checkbox" class="custom-control-input" id="is_active" name="is_active" {% if user.is_active %}checked{% endif %}>
@@ -46,4 +76,22 @@
         </div>
     </div>
 </div>
+
+<script>
+    document.getElementById('profileImage').onclick = function() {
+        document.getElementById('image').click();
+    };
+
+    function previewImage(event) {
+        const reader = new FileReader();
+        reader.onload = function(){
+            const output = document.getElementById('profileImage');
+            output.src = reader.result;
+            output.style.width = '150px';
+            output.style.height = '150px';
+            output.style.objectFit = 'cover';
+        };
+        reader.readAsDataURL(event.target.files[0]);
+    }
+</script>
 {% endblock %}

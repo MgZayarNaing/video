@@ -1,9 +1,8 @@
-# myapp/models.py
-
+from django.db import models
 import uuid
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
-from django.db import models
 from django.utils import timezone
+from datetime import datetime
 
 class CustomUserManager(BaseUserManager):
     def create_user(self, username, email, phone_number, password=None, **extra_fields):
@@ -18,20 +17,31 @@ class CustomUserManager(BaseUserManager):
     def create_superuser(self, username, email, phone_number, password=None, **extra_fields):
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
-
+        
         return self.create_user(username, email, phone_number, password, **extra_fields)
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
+    GENDER_CHOICES = (
+        ('M', 'Male'),
+        ('F', 'Female'),
+        ('N', 'Non-Binary')
+    )
+
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     username = models.CharField(max_length=255, unique=True)
     email = models.EmailField(unique=True)
-    phone_number = models.CharField(max_length=15, unique=True)
+    phone_number = models.CharField(max_length=15, blank=True, null=True)
+    age = models.IntegerField(blank=True, null=True)
+    image = models.ImageField(upload_to='user_images/', blank=True, null=True)
+    address = models.TextField(blank=True, null=True)
+    gender = models.CharField(max_length=1, choices=GENDER_CHOICES, blank=True, null=True)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     date_joined = models.DateTimeField(auto_now_add=True)
     last_login = models.DateTimeField(null=True, blank=True)
     last_activity = models.DateTimeField(null=True, blank=True)
     last_logout = models.DateTimeField(null=True, blank=True)
+    created_at = models.DateTimeField(default=timezone.now)
 
     objects = CustomUserManager()
 
