@@ -56,7 +56,7 @@ class CustomUserAdmin(UserAdmin):
     def get_status(self, obj):
         if obj.last_activity:
             delta = timezone.now() - obj.last_activity
-            if delta.seconds < 300:  # Considered online if active within the last 5 minutes
+            if delta.seconds < 1:  # Considered online if active within the last 5 minutes
                 return "Online"
         return "Offline"
     get_status.short_description = 'Status'

@@ -88,9 +88,9 @@
                                     <p class="mb-0 text-warning">
                                         <span>
                                             {% if total_visitor_growth.status == 'up' %}
-                                                <i class="fa fa-caret-up mr-2"></i>
+                                            <i class="fa fa-caret-up mr-2"></i>
                                             {% else %}
-                                                <i class="fa fa-caret-down mr-2"></i>
+                                            <i class="fa fa-caret-down mr-2"></i>
                                             {% endif %}
                                         </span>
                                         {{ total_visitor_growth.percentage }}%
@@ -254,73 +254,71 @@
                 </div>
             </div>
             <div class="col-lg-4">
-                <div class="iq-card iq-card iq-card-block iq-card-stretch iq-card-height">
+                <div class="iq-card iq-card-block iq-card-stretch iq-card-height">
                     <div class="iq-card-header">
                         <div class="iq-header-title">
                             <h4 class="card-title text-center">User's Of Product</h4>
                         </div>
                     </div>
-                    <div class="iq-card-body pb-0">
-                        <div id="view-chart-01">
+                    <div class="iq-card-body pb-3">
+                        <div class="chart-container">
+                            <canvas id="userChart"></canvas>
                         </div>
-                        <div class="row mt-1">
-                            <div class="col-sm-6 col-md-3 col-lg-6 iq-user-list">
-                                <div class="iq-card">
-                                    <div class="iq-card-body">
-                                        <div class="media align-items-center">
-                                            <div class="iq-user-box bg-primary"></div>
-                                            <div class="media-body text-white">
-                                                <p class="mb-0 font-size-14 line-height">New <br>
-                                                    Customer
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-sm-6 col-md-3 col-lg-6 iq-user-list">
-                                <div class="iq-card">
-                                    <div class="iq-card-body">
-                                        <div class="media align-items-center">
-                                            <div class="iq-user-box bg-warning"></div>
-                                            <div class="media-body text-white">
-                                                <p class="mb-0 font-size-14 line-height">Exsisting <br>
-                                                    Subscriber's
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-sm-6 col-md-3 col-lg-6 iq-user-list">
-                                <div class="iq-card">
-                                    <div class="iq-card-body">
-                                        <div class="media align-items-center">
-                                            <div class="iq-user-box bg-info"></div>
-                                            <div class="media-body text-white">
-                                                <p class="mb-0 font-size-14 line-height">Daily<br>
-                                                    Visitor's
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-sm-6 col-md-3 col-lg-6 iq-user-list">
-                                <div class="iq-card">
-                                    <div class="iq-card-body">
-                                        <div class="media align-items-center">
-                                            <div class="iq-user-box bg-danger"></div>
-                                            <div class="media-body text-white">
-                                                <p class="mb-0 font-size-14 line-height">Extented <br>
-                                                    Subscriber's
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+                        <script>
+                            var ctx = document.getElementById('userChart').getContext('2d');
+                            var userChart = new Chart(ctx, {
+                                type: 'doughnut',
+                                data: {
+                                    labels: ['Users', 'Daily Visitors', 'Total Visitors'],
+                                    datasets: [{
+                                        data: [{{ user_count }}, {{ daily_visitors }}, {{ total_visitors }}],
+                            backgroundColor: [
+                                'rgba(226, 14, 2, 1.0)',
+                                'rgba(0, 122, 255, 1.0)',
+                                'rgba(246, 138, 4, 1.0)'
+                            ],
+                                borderColor: ['rgba(255, 255, 255, 1)'],
+                                    borderWidth: 2
+        }]
+    },
+                            options: {
+                                responsive: true,
+                                    maintainAspectRatio: false,
+                                        legend: {
+                                    position: 'bottom', // Legend position at bottom
+                                        labels: {
+                                        fontColor: 'white',
+                                            fontSize: 14,
+                                                padding: 20
+                                    }
+                                },
+                                title: {
+                                    display: true,
+                                        text: 'User\'s Of Product',
+                                            fontColor: 'white',
+                                                fontSize: 16
+                                },
+                                tooltips: {
+                                    enabled: true,
+                                        mode: 'index',
+                                            intersect: false,
+                                                bodyFontColor: 'white',
+                                                    callbacks: {
+                                        label: function(tooltipItem, data) {
+                                            let label = data.labels[tooltipItem.index];
+                                            let value = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
+                                            return label + ': ' + value;
+                                        }
+                                    }
+                                },
+                                cutoutPercentage: 60,
+    }
+});
+
+                        </script>
+
+
                     </div>
                 </div>
             </div>
@@ -445,153 +443,6 @@
                         </div>
                         <div class="col-lg-5">
                             <div id="view-chart-02" class="view-cahrt-02"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-sm-12">
-                <div class="iq-card">
-                    <div class="iq-card-header d-flex justify-content-between">
-                        <div class="iq-header-title">
-                            <h4 class="card-title">Recently Viewed Items</h4>
-                        </div>
-                        <div class="iq-card-header-toolbar d-flex align-items-center seasons">
-                            <div class="iq-custom-select d-inline-block sea-epi s-margin">
-                                <select name="cars" class="form-control season-select">
-                                    <option value="season1">Most Likely</option>
-                                    <option value="season2">Unlikely</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="iq-card-body">
-                        <div class="table-responsive">
-                            <table class="data-tables table movie_table" style="width:100%">
-                                <thead>
-                                    <tr>
-                                        <th style="width:20%;">Movie</th>
-                                        <th style="width:10%;">Rating</th>
-                                        <th style="width:20%;">Category</th>
-                                        <th style="width:10%;">Download/Views</th>
-                                        <th style="width:10%;">User</th>
-                                        <th style="width:20%;">Date</th>
-                                        <th style="width:10%;"><i class="lar la-heart"></i></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>
-                                            <div class="media align-items-center">
-                                                <div class="iq-movie">
-                                                    <a href="javascript:void(0);"><img
-                                                            src="../assets/images/movie-thumb/01.jpg"
-                                                            class="img-border-radius avatar-40 img-fluid" alt=""></a>
-                                                </div>
-                                                <div class="media-body text-white text-left ml-3">
-                                                    <p class="mb-0">Champions</p>
-                                                    <small>1h 40m</small>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td><i class="lar la-star mr-2"></i> 9.2</td>
-                                        <td>Horror</td>
-                                        <td>
-                                            <i class="lar la-eye "></i>
-                                        </td>
-                                        <td>Unsubcriber</td>
-                                        <td>21 July,2020</td>
-                                        <td><i class="las la-heart text-primary"></i></td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div class="media align-items-center">
-                                                <div class="iq-movie">
-                                                    <a href="javascript:void(0);"><img
-                                                            src="../assets/images/show-thumb/05.jpg"
-                                                            class="img-border-radius avatar-40 img-fluid" alt=""></a>
-                                                </div>
-                                                <div class="media-body text-white text-left ml-3">
-                                                    <p class="mb-0">Last Race</p>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td><i class="lar la-star mr-2"></i> 7.2</td>
-                                        <td>Horror</td>
-                                        <td>
-                                            <i class="lar la-eye "></i>
-                                        </td>
-                                        <td>subcriber</td>
-                                        <td>22 July,2020</td>
-                                        <td><i class="las la-heart text-primary"></i></td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div class="media align-items-center">
-                                                <div class="iq-movie">
-                                                    <a href="javascript:void(0);"><img
-                                                            src="../assets/images/show-thumb/07.jpg"
-                                                            class="img-border-radius avatar-40 img-fluid" alt=""></a>
-                                                </div>
-                                                <div class="media-body text-white text-left ml-3">
-                                                    <p class="mb-0">Boop Bitty</p>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td><i class="lar la-star mr-2"></i> 8.2</td>
-                                        <td>Thriller</td>
-                                        <td>
-                                            <i class="lar la-eye "></i>
-                                        </td>
-                                        <td>Unsubcriber</td>
-                                        <td>23 July,2020</td>
-                                        <td><i class="las la-heart text-primary"></i></td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div class="media align-items-center">
-                                                <div class="iq-movie">
-                                                    <a href="javascript:void(0);"><img
-                                                            src="../assets/images/show-thumb/10.jpg"
-                                                            class="img-border-radius avatar-40 img-fluid" alt=""></a>
-                                                </div>
-                                                <div class="media-body text-white text-left ml-3">
-                                                    <p class="mb-0">Dino Land</p>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td><i class="lar la-star mr-2"></i> 8.5</td>
-                                        <td>Action</td>
-                                        <td>
-                                            <i class="lar la-eye "></i>
-                                        </td>
-                                        <td>Unsubcriber</td>
-                                        <td>24 July,2020</td>
-                                        <td><i class="las la-heart text-primary"></i></td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div class="media align-items-center">
-                                                <div class="iq-movie">
-                                                    <a href="javascript:void(0);"><img
-                                                            src="../assets/images/show-thumb/04.jpg"
-                                                            class="img-border-radius avatar-40 img-fluid" alt=""></a>
-                                                </div>
-                                                <div class="media-body text-white text-left ml-3">
-                                                    <p class="mb-0">The Last Breath</p>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td><i class="lar la-star mr-2"></i> 8.9</td>
-                                        <td>Horror</td>
-                                        <td>
-                                            <i class="lar la-eye "></i>
-                                        </td>
-                                        <td>subcriber</td>
-                                        <td>25 July,2020</td>
-                                        <td><i class="las la-heart text-primary"></i></td>
-                                    </tr>
-                                </tbody>
-                            </table>
                         </div>
                     </div>
                 </div>
