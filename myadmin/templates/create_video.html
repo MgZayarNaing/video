@@ -47,7 +47,10 @@
                                     Drag and drop a video file here or click to select a file
                                 </div>
                                 <input type="file" class="form-control" id="video_file" name="video_file" accept="video/*" style="display: none;" required>
-                                <video id="videoPreview" width="100%" controls style="display: none; margin-top: 10px;"></video>
+                                <video id="videoPreview" width="100%" controls style="display: none; margin-top: 10px;">
+                                    <source id="videoSource" src="">
+                                    Your browser does not support the video tag.
+                                </video>
                                 <div id="fileSize" style="margin-top: 10px;"></div>
                                 <progress id="uploadProgress" value="0" max="100" style="width: 100%; display: none; margin-top: 10px;"></progress>
                                 <div id="uploadComplete" style="display: none; margin-top: 10px;">Upload Complete!</div>
@@ -95,9 +98,11 @@ document.getElementById('video_file').addEventListener('change', function(event)
 function handleFiles(file) {
     if (file) {
         var videoPreview = document.getElementById('videoPreview');
+        var videoSource = document.getElementById('videoSource');
         var fileSizeDisplay = document.getElementById('fileSize');
         var url = URL.createObjectURL(file);
-        videoPreview.src = url;
+        videoSource.src = url;
+        videoPreview.load();
         videoPreview.style.display = 'block';
         videoPreview.play();
         document.getElementById('drop_zone').style.display = 'none';

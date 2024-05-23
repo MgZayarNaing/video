@@ -17,7 +17,8 @@ urlpatterns = [
     path('update_category/<uuid:category_id>/',update_category, name='update_category'),
 
     path('videos/',video_list, name='video_list'),
-    path('videos/create/', create_video, name='create_video'),
+    path('videos/create/',create_video, name='create_video'),
+    path('videos/<uuid:video_id>/',video_detail, name='video_detail'),
     path('videos/<uuid:video_id>/',video_detail, name='video_detail'),
     path('videos/<uuid:video_id>/update/',update_video, name='update_video'),
     path('videos/<uuid:video_id>/delete/',delete_video, name='delete_video'),

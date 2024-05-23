@@ -1,5 +1,6 @@
 {% extends 'admin_base.html' %}
-{% block title %} Video Detail {% endblock %}
+{% load static %}
+{% block title %}Video Detail{% endblock %}
 
 {% block body %}
 <div id="content-page" class="content-page">
@@ -31,12 +32,15 @@
                             <input type="text" class="form-control" id="category" value="{{ video.category.name }}" readonly>
                         </div>
                         <div class="form-group">
-                            <label for="user">Uploaded By</label>
-                            <input type="text" class="form-control" id="user" value="{{ video.user.username }}" readonly>
-                        </div>
-                        <div class="form-group">
                             <label for="created_at">Created At</label>
                             <input type="text" class="form-control" id="created_at" value="{{ video.created_at }}" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="video_preview">Video Preview</label>
+                            <video id="videoPreview" width="100%" controls>
+                                <source src="{{ video.video_file.url }}" type="video/mp4">
+                                Your browser does not support the video tag.
+                            </video>
                         </div>
                         <div class="d-flex justify-content-between mt-3">
                             <a href="{% url 'update_video' video.id %}" class="btn btn-primary">Edit</a>

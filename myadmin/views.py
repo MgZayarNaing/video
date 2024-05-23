@@ -14,6 +14,8 @@ from django.contrib import messages
 from myapp.models import *
 import ffmpeg
 
+import os
+
 
 User = get_user_model()
 
@@ -243,47 +245,45 @@ def video_list(request):
     videos = Video.objects.all().order_by('-created_at')
     return render(request, 'video_list.html', {'videos': videos})
 
+@csrf_exempt
 def create_video(request):
     if request.method == 'POST':
-        name = request.POST.get('name')
-        description = request.POST.get('description')
-        category_id = request.POST.get('category')
-        quality = request.POST.get('quality')
         video_file = request.FILES.get('video_file')
-        category = Category.objects.get(id=category_id)
+        quality = request.POST.get('quality')
         
-        # Save the uploaded video file temporarily
-        temp_file_path = 'temp_video_file.mp4'
-        with open(temp_file_path, 'wb+') as destination:
-            for chunk in video_file.chunks():
-                destination.write(chunk)
+        # Define quality resolution mapping
+        quality_resolution_mapping = {
+            '360': 'scale=-1:360',
+            '480': 'scale=-1:480',
+            '720': 'scale=-1:720',
+            '1080': 'scale=-1:1080'
+        }
+
+        if not video_file or quality not in quality_resolution_mapping:
+            return JsonResponse({'error': 'Invalid file or quality'}, status=400)
         
-        # Convert video to the chosen quality
-        output_file_path = 'output_video_file.mp4'
-        if quality == '360':
-            ffmpeg.input(temp_file_path).output(output_file_path, vf='scale=-1:360').run()
-        elif quality == '480':
-            ffmpeg.input(temp_file_path).output(output_file_path, vf='scale=-1:480').run()
-        elif quality == '720':
-            ffmpeg.input(temp_file_path).output(output_file_path, vf='scale=-1:720').run()
-        elif quality == '1080':
-            ffmpeg.input(temp_file_path).output(output_file_path, vf='scale=-1:1080').run()
-        
-        # Save the converted video file to the Video model
-        with open(output_file_path, 'rb') as output_video:
-            video = Video.objects.create(
-                name=name,
-                description=description,
-                category=category,
-                video_file=output_video,
-                user=request.user
-            )
-        
-        messages.success(request, 'Video created successfully!')
-        return redirect('video_list')
+        try:
+            # Save uploaded file temporarily
+            temp_file_path = os.path.join(settings.MEDIA_ROOT, video_file.name)
+            with open(temp_file_path, 'wb+') as temp_file:
+                for chunk in video_file.chunks():
+                    temp_file.write(chunk)
+            
+            # Process video with ffmpeg
+            output_file_path = os.path.join(settings.MEDIA_ROOT, f'processed_{quality}_{video_file.name}')
+            input_stream = ffmpeg.input(temp_file_path)
+            output_stream = input_stream.output(output_file_path, vf=quality_resolution_mapping[quality])
+            ffmpeg.run(output_stream)
+            
+            # Clean up the temporary file
+            os.remove(temp_file_path)
+            
+            return JsonResponse({'message': 'Video processed successfully', 'output_url': output_file_path}, status=200)
+        except ffmpeg.Error as e:
+            return JsonResponse({'error': 'Failed to process video', 'details': str(e)}, status=500)
     else:
-        categories = Category.objects.all()
-        return render(request, 'create_video.html', {'categories': categories})
+        return render(request, 'create_video.html', {'categories': Category.objects.all()})
+
 
 def video_detail(request, video_id):
     video = get_object_or_404(Video, id=video_id)
