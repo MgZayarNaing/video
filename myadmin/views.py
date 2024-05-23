@@ -100,10 +100,11 @@ def dashboard_view(request):
     total_visitors, total_visitor_growth = calculate_total_visitors()
     total_groups = Group.objects.count() 
     user_count = CustomUser.objects.count()
-    is_satff = CustomUser.objects.filter(is_staff=True).count()
+    is_staff = CustomUser.objects.filter(is_staff=True).count()
     is_active = CustomUser.objects.filter(is_active=True).count()
     
-
+    total_categories = Category.objects.count()
+    total_videos = Video.objects.count()
 
     return render(request, 'dashboard.html', {
         'total_users': total_users,
@@ -117,7 +118,9 @@ def dashboard_view(request):
         'total_groups': total_groups,
         'user_count': user_count,
         'total_active_users': is_active,
-        'total_staff_users': is_satff,
+        'total_staff_users': is_staff,
+        'total_categories': total_categories,
+        'total_videos': total_videos,
     })
 
 
@@ -282,16 +285,21 @@ def update_video(request, video_id):
         description = request.POST.get('description')
         category_id = request.POST.get('category')
         category = get_object_or_404(Category, id=category_id)
+        
+        video_file = request.FILES.get('video_file')
 
         video.name = name
         video.description = description
         video.category = category
 
+        if video_file:
+            video.video_file = video_file
+
         video.save()
         messages.success(request, 'Video updated successfully!')
         return redirect('video_list')
 
-    return render(request, 'update_video.html', {'video': video})
+    return render(request, 'update_video.html', {'video': video, 'categories': Category.objects.all()})
 
 @csrf_exempt
 def delete_video(request, video_id):

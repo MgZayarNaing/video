@@ -9,8 +9,9 @@
 <!-- Page Content  -->
 <div id="content-page" class="content-page">
     <div class="container-fluid">
+        <!-- user start -->
         <div class="row">
-            <div class="col-lg-8">
+            <div class="col-lg-12">
                 <div class="row">
                     <!-- Users Card -->
                     <div class="col-sm-6 col-lg-6 col-xl-3">
@@ -31,11 +32,11 @@
                                     <p class="mb-0 text-primary">
                                         <span>
                                             {% if user_growth.status == 'up' %}
-                                                <i class="fa fa-caret-up mr-2"></i>
+                                            <i class="fa fa-caret-up mr-2"></i>
                                             {% elif user_growth.status == 'down' %}
-                                                <i class="fa fa-caret-down mr-2"></i>
+                                            <i class="fa fa-caret-down mr-2"></i>
                                             {% else %}
-                                                <i class="fa fa-circle mr-2"></i>
+                                            <i class="fa fa-circle mr-2"></i>
                                             {% endif %}
                                         </span>
                                         {{ user_growth.percentage|default:"0" }}%
@@ -85,11 +86,11 @@
                                     <p class="mb-0 text-info">
                                         <span>
                                             {% if daily_visitor_growth.status == 'up' %}
-                                                <i class="fa fa-caret-up mr-2"></i>
+                                            <i class="fa fa-caret-up mr-2"></i>
                                             {% elif daily_visitor_growth.status == 'down' %}
-                                                <i class="fa fa-caret-down mr-2"></i>
+                                            <i class="fa fa-caret-down mr-2"></i>
                                             {% else %}
-                                                <i class="fa fa-circle mr-2"></i>
+                                            <i class="fa fa-circle mr-2"></i>
                                             {% endif %}
                                         </span>
                                         {{ daily_visitor_growth.percentage|default:"0" }}%
@@ -118,11 +119,11 @@
                                     <p class="mb-0 text-warning">
                                         <span>
                                             {% if total_visitor_growth.status == 'up' %}
-                                                <i class="fa fa-caret-up mr-2"></i>
+                                            <i class="fa fa-caret-up mr-2"></i>
                                             {% elif total_visitor_growth.status == 'down' %}
-                                                <i class="fa fa-caret-down mr-2"></i>
+                                            <i class="fa fa-caret-down mr-2"></i>
                                             {% else %}
-                                                <i class="fa fa-circle mr-2"></i>
+                                            <i class="fa fa-circle mr-2"></i>
                                             {% endif %}
                                         </span>
                                         {{ total_visitor_growth.percentage|default:"0" }}%
@@ -131,7 +132,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <!-- Online Users Card -->
                     <div class="col-sm-6 col-lg-6 col-xl-3">
                         <div class="iq-card iq-card-block iq-card-stretch iq-card-height">
@@ -148,7 +149,7 @@
                                 </div>
                                 <div class="d-flex align-items-center justify-content-between mt-3">
                                     <h4 class="mb-0">{{ online_users|default:"0" }}</h4>
-                                    
+
                                 </div>
                             </div>
                         </div>
@@ -170,138 +171,198 @@
                                 </div>
                                 <div class="d-flex align-items-center justify-content-between mt-3">
                                     <h4 class="mb-0">{{ offline_users|default:"0" }}</h4>
-                                    
+
                                 </div>
                             </div>
                         </div>
                     </div>
 
                     <!-- Active Users Card -->
-<div class="col-sm-6 col-lg-6 col-xl-3">
-    <div class="iq-card iq-card-block iq-card-stretch iq-card-height">
-        <div class="iq-card-body">
-            <div class="d-flex align-items-center justify-content-between">
-                <div class="iq-cart-text text-uppercase">
-                    <p class="mb-0 font-size-14">
-                        Active Users
-                    </p>
-                </div>
-                <div class="icon iq-icon-box-top rounded-circle bg-success">
-                    <i class="las la-user-check"></i>
-                </div>
-            </div>
-            <div class="d-flex align-items-center justify-content-between mt-3">
-                <h4 class="mb-0">{{ total_active_users }}</h4>
-            </div>
-        </div>
-    </div>
-</div>
+                    <div class="col-sm-6 col-lg-6 col-xl-3">
+                        <div class="iq-card iq-card-block iq-card-stretch iq-card-height">
+                            <div class="iq-card-body">
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <div class="iq-cart-text text-uppercase">
+                                        <p class="mb-0 font-size-14">
+                                            Active Users
+                                        </p>
+                                    </div>
+                                    <div class="icon iq-icon-box-top rounded-circle bg-success">
+                                        <i class="las la-user-check"></i>
+                                    </div>
+                                </div>
+                                <div class="d-flex align-items-center justify-content-between mt-3">
+                                    <h4 class="mb-0">{{ total_active_users }}</h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-<!-- Staff Users Card -->
-<div class="col-sm-6 col-lg-6 col-xl-3">
-    <div class="iq-card iq-card-block iq-card-stretch iq-card-height">
-        <div class="iq-card-body">
-            <div class="d-flex align-items-center justify-content-between">
-                <div class="iq-cart-text text-uppercase">
-                    <p class="mb-0 font-size-14">
-                        Staff Users
-                    </p>
-                </div>
-                <div class="icon iq-icon-box-top rounded-circle bg-info">
-                    <i class="las la-user-tie"></i>
-                </div>
-            </div>
-            <div class="d-flex align-items-center justify-content-between mt-3">
-                <h4 class="mb-0">{{ total_staff_users }}</h4>
-            </div>
-        </div>
-    </div>
-</div>
+                    <!-- Staff Users Card -->
+                    <div class="col-sm-6 col-lg-6 col-xl-3">
+                        <div class="iq-card iq-card-block iq-card-stretch iq-card-height">
+                            <div class="iq-card-body">
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <div class="iq-cart-text text-uppercase">
+                                        <p class="mb-0 font-size-14">
+                                            Staff Users
+                                        </p>
+                                    </div>
+                                    <div class="icon iq-icon-box-top rounded-circle bg-info">
+                                        <i class="las la-user-tie"></i>
+                                    </div>
+                                </div>
+                                <div class="d-flex align-items-center justify-content-between mt-3">
+                                    <h4 class="mb-0">{{ total_staff_users }}</h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
 
-                    
+
 
                 </div>
                 <!-- Additional sections can be added here -->
             </div>
-            <div class="col-lg-4">
-                <div class="iq-card iq-card-block iq-card-stretch iq-card-height">
-                    <div class="iq-card-header">
-                        <div class="iq-header-title">
-                            <h4 class="card-title text-center">User's Of Product</h4>
+
+        </div>
+
+        <!-- user end -->
+
+        <!-- vd -->
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="row">
+                    <!-- Total Categories Section -->
+                    <div class="col-sm-6 col-lg-6 col-xl-3">
+                        <div class="iq-card iq-card-block iq-card-stretch iq-card-height">
+                            <div class="iq-card-body">
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <div class="iq-cart-text text-uppercase">
+                                        <p class="mb-0 font-size-14">
+                                            Total Categories
+                                        </p>
+                                    </div>
+                                    <div class="icon iq-icon-box-top rounded-circle bg-info">
+                                        <i class="las la-tags"></i>
+                                    </div>
+                                </div>
+                                <div class="d-flex align-items-center justify-content-between mt-3">
+                                    <h4 class="mb-0">{{ total_categories|default:0 }}</h4>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div class="iq-card-body pb-3">
-                        <div class="chart-container">
-                            <canvas id="userChart"></canvas>
+                    <!-- Total Videos Section -->
+                    <div class="col-sm-6 col-lg-6 col-xl-3">
+                        <div class="iq-card iq-card-block iq-card-stretch iq-card-height">
+                            <div class="iq-card-body">
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <div class="iq-cart-text text-uppercase">
+                                        <p class="mb-0 font-size-14">
+                                            Total Videos
+                                        </p>
+                                    </div>
+                                    <div class="icon iq-icon-box-top rounded-circle bg-success">
+                                        <i class="las la-video"></i>
+                                    </div>
+                                </div>
+                                <div class="d-flex align-items-center justify-content-between mt-3">
+                                    <h4 class="mb-0">{{ total_videos|default:0 }}</h4>
+                                </div>
+                            </div>
                         </div>
-                        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-                        <script>
-                            var ctx = document.getElementById('userChart').getContext('2d');
-                            var userChart = new Chart(ctx, {
-                                type: 'doughnut',
-                                data: {
-                                    labels: ['Users','Groups', 'Daily Visitors', 'Total Visitors', 'Online', 'Offline', 'Active Users','Staff Users'],
-                                    datasets: [{
-                                        data: [{{ user_count }},{{ total_groups|default:"0" }}, {{ daily_visitors }}, {{ total_visitors }},{{ online_users }},{{ offline_users }},{{ total_active_users }},{{ total_staff_users }}],
-                            backgroundColor: [
-                                'rgba(226, 14, 2, 1.0)',
-                                'rgba(0, 122, 255, 1.0)',
-                                'rgba(246, 138, 4, 1.0)',
-                                'rgba(20, 231, 136, 1)',
-                                'rgba(84, 94, 117, 1)',
-                                'rgba(34, 94, 117, 1)',
-                                'rgba(34, 44, 117, 1)',
-                                'rgba(34, 44, 817, 1)',
+                    </div>
+                </div>
+
+                <!-- Additional sections can be added here -->
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-12"></div>
+        <div class="col-lg-4">
+            <div class="iq-card iq-card-block iq-card-stretch iq-card-height">
+                <div class="iq-card-header">
+                    <div class="iq-header-title">
+                        <h4 class="card-title text-center">User's Of Product</h4>
+                    </div>
+                </div>
+                <div class="iq-card-body pb-3">
+                    <div class="chart-container">
+                        <canvas id="userChart"></canvas>
+                    </div>
+                    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+                    <script>
+                        var ctx = document.getElementById('userChart').getContext('2d');
+                        var userChart = new Chart(ctx, {
+                            type: 'doughnut',
+                            data: {
+                                labels: ['Users','Groups', 'Daily Visitors', 'Total Visitors', 'Online', 'Offline', 'Active Users','Staff Users'],
+                                datasets: [{
+                                    data: [{{ user_count }},{{ total_groups|default:"0" }}, {{ daily_visitors }}, {{ total_visitors }},{{ online_users }},{{ offline_users }},{{ total_active_users }},{{ total_staff_users }}],
+                        backgroundColor: [
+                            'rgba(226, 14, 2, 1.0)',
+                            'rgba(0, 122, 255, 1.0)',
+                            'rgba(246, 138, 4, 1.0)',
+                            'rgba(20, 231, 136, 1)',
+                            'rgba(84, 94, 117, 1)',
+                            'rgba(34, 94, 117, 1)',
+                            'rgba(34, 44, 117, 1)',
+                            'rgba(34, 44, 817, 1)',
 
 
 
-                            ],
-                                borderColor: ['rgba(255, 255, 255, 1)'],
-                                    borderWidth: 2
-        }]
-    },
-                            options: {
-                                responsive: true,
-                                    maintainAspectRatio: false,
-                                        legend: {
-                                    position: 'bottom', // Legend position at bottom
-                                        labels: {
+                        ],
+                            borderColor: ['rgba(255, 255, 255, 1)'],
+                                borderWidth: 2
+    }]
+},
+                        options: {
+                            responsive: true,
+                                maintainAspectRatio: false,
+                                    legend: {
+                                position: 'bottom', // Legend position at bottom
+                                    labels: {
+                                    fontColor: 'white',
+                                        fontSize: 14,
+                                            padding: 20
+                                }
+                            },
+                            title: {
+                                display: true,
+                                    text: 'User\'s Of Product',
                                         fontColor: 'white',
-                                            fontSize: 14,
-                                                padding: 20
+                                            fontSize: 16
+                            },
+                            tooltips: {
+                                enabled: true,
+                                    mode: 'index',
+                                        intersect: false,
+                                            bodyFontColor: 'white',
+                                                callbacks: {
+                                    label: function(tooltipItem, data) {
+                                        let label = data.labels[tooltipItem.index];
+                                        let value = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
+                                        return label + ': ' + value;
                                     }
-                                },
-                                title: {
-                                    display: true,
-                                        text: 'User\'s Of Product',
-                                            fontColor: 'white',
-                                                fontSize: 16
-                                },
-                                tooltips: {
-                                    enabled: true,
-                                        mode: 'index',
-                                            intersect: false,
-                                                bodyFontColor: 'white',
-                                                    callbacks: {
-                                        label: function(tooltipItem, data) {
-                                            let label = data.labels[tooltipItem.index];
-                                            let value = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
-                                            return label + ': ' + value;
-                                        }
-                                    }
-                                },
-                                cutoutPercentage: 60,
-    }
+                                }
+                            },
+                            cutoutPercentage: 60,
+}
 });
 
-                        </script>
+                    </script>
 
 
-                    </div>
                 </div>
             </div>
         </div>
+        </div>
+        </div>
+
+        <!-- vd -->
         <div class="row">
             <div class="col-sm-12  col-lg-4">
                 <div class="iq-card iq-card-block iq-card-stretch iq-card-height">
