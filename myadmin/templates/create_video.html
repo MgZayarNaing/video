@@ -32,27 +32,19 @@
                                     {% endfor %}
                                 </select>
                             </div>
-                            <div class="form-group">
-                                <label for="quality">Video Quality</label>
-                                <select class="form-control" id="quality" name="quality">
-                                    <option value="360">360p</option>
-                                    <option value="480">480p</option>
-                                    <option value="720">720p</option>
-                                    <option value="1080">1080p</option>
-                                </select>
-                            </div>
+                        
                             <div class="form-group">
                                 <label for="video_file">Video File</label>
                                 <div id="drop_zone" class="form-control" style="height: 200px; border: 2px dashed #ccc; display: flex; align-items: center; justify-content: center; cursor: pointer;">
                                     Drag and drop a video file here or click to select a file
                                 </div>
                                 <input type="file" class="form-control" id="video_file" name="video_file" accept="video/*" style="display: none;" required>
-                                <video id="videoPreview" width="100%" controls style="display: none; margin-top: 10px;">
-                                    <source id="videoSource" src="">
-                                    Your browser does not support the video tag.
-                                </video>
+                                <video id="videoPreview" width="100%" controls style="display: none; margin-top: 10px;"></video>
                                 <div id="fileSize" style="margin-top: 10px;"></div>
-                                <progress id="uploadProgress" value="0" max="100" style="width: 100%; display: none; margin-top: 10px;"></progress>
+                                <div id="uploadProgressContainer" style="width: 100%; display: none; margin-top: 10px; position: relative;">
+                                    <progress id="uploadProgress" value="0" max="100" style="width: 100%;"></progress>
+                                    <span id="uploadPercentage" style="position: absolute; left: 50%; top: -60%; transform: translate(-50%, -50%); color: white; font-weight: bold;">0%</span>
+                                </div>
                                 <div id="uploadComplete" style="display: none; margin-top: 10px;">Upload Complete!</div>
                             </div>
                             <button type="submit" class="btn btn-primary">Create</button>
@@ -98,15 +90,13 @@ document.getElementById('video_file').addEventListener('change', function(event)
 function handleFiles(file) {
     if (file) {
         var videoPreview = document.getElementById('videoPreview');
-        var videoSource = document.getElementById('videoSource');
         var fileSizeDisplay = document.getElementById('fileSize');
         var url = URL.createObjectURL(file);
-        videoSource.src = url;
-        videoPreview.load();
+        videoPreview.src = url;
         videoPreview.style.display = 'block';
         videoPreview.play();
         document.getElementById('drop_zone').style.display = 'none';
-        document.getElementById('uploadProgress').style.display = 'block';
+        document.getElementById('uploadProgressContainer').style.display = 'block';
         fileSizeDisplay.textContent = `File size: ${(file.size / 1024 / 1024).toFixed(2)} MB`;
     }
 }
@@ -116,17 +106,32 @@ document.getElementById('videoUploadForm').addEventListener('submit', function(e
     var formData = new FormData(this);
     var xhr = new XMLHttpRequest();
     xhr.open('POST', "{% url 'create_video' %}", true);
+
     xhr.upload.onprogress = function(e) {
         if (e.lengthComputable) {
             var percentComplete = Math.round((e.loaded / e.total) * 100);
             var uploadProgress = document.getElementById('uploadProgress');
+            var uploadPercentage = document.getElementById('uploadPercentage');
             uploadProgress.value = percentComplete;
+            uploadPercentage.textContent = percentComplete + '%';
+
+            if (percentComplete < 50) {
+                uploadProgress.style.backgroundColor = '#ff0000'; // red
+            } else if (percentComplete < 75) {
+                uploadProgress.style.backgroundColor = '#ffa500'; // orange
+            } else {
+                uploadProgress.style.backgroundColor = '#00ff00'; // green
+            }
+
             if (percentComplete === 100) {
-                uploadProgress.style.display = 'none';
                 document.getElementById('uploadComplete').style.display = 'block';
+                setTimeout(function() {
+                    document.getElementById('uploadProgressContainer').style.display = 'none';
+                }, 500); // ပြီးဆုံးသောအခါ progress bar ကို ဖျောက်ပါ။
             }
         }
     };
+
     xhr.onload = function() {
         if (xhr.status === 200) {
             alert('Video uploaded successfully!');
@@ -137,5 +142,6 @@ document.getElementById('videoUploadForm').addEventListener('submit', function(e
     };
     xhr.send(formData);
 });
+
 </script>
 {% endblock %}

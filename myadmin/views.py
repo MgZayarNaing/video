@@ -249,41 +249,25 @@ def video_list(request):
 def create_video(request):
     if request.method == 'POST':
         video_file = request.FILES.get('video_file')
-        quality = request.POST.get('quality')
-        
-        # Define quality resolution mapping
-        quality_resolution_mapping = {
-            '360': 'scale=-1:360',
-            '480': 'scale=-1:480',
-            '720': 'scale=-1:720',
-            '1080': 'scale=-1:1080'
-        }
 
-        if not video_file or quality not in quality_resolution_mapping:
-            return JsonResponse({'error': 'Invalid file or quality'}, status=400)
+        if not video_file:
+            return JsonResponse({'error': 'Invalid file'}, status=400)
         
         try:
-            # Save uploaded file temporarily
-            temp_file_path = os.path.join(settings.MEDIA_ROOT, video_file.name)
-            with open(temp_file_path, 'wb+') as temp_file:
-                for chunk in video_file.chunks():
-                    temp_file.write(chunk)
+            # Save uploaded file
+            video = Video.objects.create(
+                category_id=request.POST.get('category'),
+                name=request.POST.get('name'),
+                description=request.POST.get('description'),
+                video_file=video_file,
+                user=request.user
+            )
             
-            # Process video with ffmpeg
-            output_file_path = os.path.join(settings.MEDIA_ROOT, f'processed_{quality}_{video_file.name}')
-            input_stream = ffmpeg.input(temp_file_path)
-            output_stream = input_stream.output(output_file_path, vf=quality_resolution_mapping[quality])
-            ffmpeg.run(output_stream)
-            
-            # Clean up the temporary file
-            os.remove(temp_file_path)
-            
-            return JsonResponse({'message': 'Video processed successfully', 'output_url': output_file_path}, status=200)
-        except ffmpeg.Error as e:
-            return JsonResponse({'error': 'Failed to process video', 'details': str(e)}, status=500)
+            return JsonResponse({'message': 'Video uploaded successfully', 'video_id': video.id}, status=200)
+        except Exception as e:
+            return JsonResponse({'error': 'Failed to upload video', 'details': str(e)}, status=500)
     else:
         return render(request, 'create_video.html', {'categories': Category.objects.all()})
-
 
 def video_detail(request, video_id):
     video = get_object_or_404(Video, id=video_id)
