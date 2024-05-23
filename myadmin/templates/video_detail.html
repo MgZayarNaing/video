@@ -37,10 +37,19 @@
                         </div>
                         <div class="form-group">
                             <label for="video_preview">Video Preview</label>
-                            <video id="videoPreview" width="100%" controls>
-                                <source src="{{ video.video_file.url }}" type="video/mp4">
-                                Your browser does not support the video tag.
-                            </video>
+                            <div style="position: relative;">
+                                <video id="videoPreview" width="100%" controls>
+                                    <source id="videoSource" src="{{ video.video_file.url }}" type="video/mp4">
+                                    Your browser does not support the video tag.
+                                </video>
+                                <button id="playPauseButton" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); border: none; background: none; color: white; font-size: 48px; cursor: pointer;">
+                                    <i class="fas fa-play" id="playPauseIcon"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="file_size">File Size</label>
+                            <p id="fileSize">{{ video.video_file.size|filesizeformat }}</p>
                         </div>
                         <div class="d-flex justify-content-between mt-3">
                             <a href="{% url 'update_video' video.id %}" class="btn btn-primary">Edit</a>
@@ -52,4 +61,43 @@
         </div>
     </div>
 </div>
+
+<script>
+    let hideButtonTimeout;
+
+    document.getElementById('playPauseButton').addEventListener('click', function() {
+        var video = document.getElementById('videoPreview');
+        var icon = document.getElementById('playPauseIcon');
+        if (video.paused) {
+            video.play();
+            icon.className = 'fas fa-pause';
+            hideButtonAfterTimeout();
+        } else {
+            video.pause();
+            icon.className = 'fas fa-play';
+            clearTimeout(hideButtonTimeout);
+            document.getElementById('playPauseButton').style.display = 'block';
+        }
+    });
+
+    document.getElementById('videoPreview').addEventListener('play', function() {
+        var icon = document.getElementById('playPauseIcon');
+        icon.className = 'fas fa-pause';
+        hideButtonAfterTimeout();
+    });
+
+    document.getElementById('videoPreview').addEventListener('pause', function() {
+        var icon = document.getElementById('playPauseIcon');
+        icon.className = 'fas fa-play';
+        clearTimeout(hideButtonTimeout);
+        document.getElementById('playPauseButton').style.display = 'block';
+    });
+
+    function hideButtonAfterTimeout() {
+        clearTimeout(hideButtonTimeout);
+        hideButtonTimeout = setTimeout(function() {
+            document.getElementById('playPauseButton').style.display = 'none';
+        }, 1000);
+    }
+</script>
 {% endblock %}
